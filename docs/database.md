@@ -58,15 +58,15 @@
 
 ## Schema Overview
 
-- `users`: Supabase-linked identities with role and contact data.
-- `course_categories`: Managed list of course categories with active flag.
-- `difficulty_levels`: Managed list of difficulty labels with active flag.
-- `courses`: Instructor-owned courses with metadata and publication status.
-- `enrollments`: Learner-course relationships tracking active or cancelled enrollment.
-- `assignments`: Course assignments with scheduling, weighting, and lifecycle state.
-- `assignment_submissions`: Learner submissions, scoring, feedback, and timing flags.
-- `reports`: Operator-managed reports about courses, assignments, or submissions.
-- `report_actions`: Follow-up actions taken in response to reports.
+- `users`: Supabase-linked identities with role and contact data. Row activity tracked with timestamps.
+- `course_categories`: Managed list of course categories with active flag and audit columns.
+- `difficulty_levels`: Managed difficulty labels with active flag and audit columns.
+- `courses`: Instructor-owned courses with metadata, lifecycle status, and audit columns.
+- `enrollments`: Learner-course relationships tracking state changes with audit columns.
+- `assignments`: Course assignments with scheduling, weighting, and lifecycle state plus audit columns.
+- `assignment_submissions`: Learner submissions, scoring, feedback, and timing flags with audit columns.
+- `reports`: Operator-managed reports about courses, assignments, or submissions with audit columns.
+- `report_actions`: Follow-up actions tied to reports with audit columns.
 
 ## Enumerated Types
 
@@ -92,6 +92,7 @@
 | name | text | NOT NULL | Display name |
 | phone_number | text | NOT NULL | Stored as provided |
 | created_at | timestamptz | DEFAULT now() | Audit timestamp |
+| updated_at | timestamptz | DEFAULT now() | Maintained by trigger |
 
 ### course_categories
 
@@ -101,6 +102,7 @@
 | name | text | NOT NULL UNIQUE | Category label |
 | is_active | boolean | NOT NULL DEFAULT true | Operators can disable without deletion |
 | created_at | timestamptz | DEFAULT now() | |
+| updated_at | timestamptz | DEFAULT now() | Maintained by trigger |
 
 ### difficulty_levels
 
@@ -110,6 +112,7 @@
 | label | text | NOT NULL UNIQUE | Difficulty name |
 | is_active | boolean | NOT NULL DEFAULT true | Operators can disable entries |
 | created_at | timestamptz | DEFAULT now() | |
+| updated_at | timestamptz | DEFAULT now() | Maintained by trigger |
 
 ### courses
 
@@ -124,7 +127,7 @@
 | curriculum | text | NOT NULL | Outline from userflow |
 | status | course_status | NOT NULL DEFAULT 'draft' | Governs visibility |
 | created_at | timestamptz | DEFAULT now() | |
-| updated_at | timestamptz | DEFAULT now() | Update trigger recommended |
+| updated_at | timestamptz | DEFAULT now() | Maintained by trigger |
 
 ### enrollments
 
@@ -155,14 +158,14 @@ Constraints:
 | late_submission_allowed | boolean | NOT NULL DEFAULT false | Enables late flag |
 | status | assignment_status | NOT NULL DEFAULT 'draft' | Lifecycle state |
 | created_at | timestamptz | DEFAULT now() | |
-| updated_at | timestamptz | DEFAULT now() | |
+| updated_at | timestamptz | DEFAULT now() | Maintained by trigger |
 
 ### assignment_submissions
 
 | Column | Type | Constraints | Notes |
 | --- | --- | --- | --- |
 | id | uuid | PK, DEFAULT gen_random_uuid() | |
-| assignment_id | uuid | NOT NULL REFERENCES assignments(id) | |
+| assignment_id | uuid | NOT NULL REFERENCES assignments(id) ON DELETE CASCADE | |
 | learner_id | uuid | NOT NULL REFERENCES users(id) | |
 | submission_text | text | NOT NULL | Free-form response |
 | submission_link | text |  | Optional URL, validated |
@@ -173,6 +176,8 @@ Constraints:
 | submitted_at | timestamptz | DEFAULT now() | Auto-set |
 | graded_at | timestamptz |  | Set on grading |
 | feedback_updated_at | timestamptz |  | Tracks latest feedback |
+| created_at | timestamptz | DEFAULT now() | Submission creation |
+| updated_at | timestamptz | DEFAULT now() | Maintained by trigger |
 
 Constraints:
 - Unique (`assignment_id`, `learner_id`).
@@ -190,6 +195,8 @@ Constraints:
 | status | report_status | NOT NULL DEFAULT 'received' | Workflow state |
 | reported_at | timestamptz | DEFAULT now() | |
 | resolved_at | timestamptz |  | Filled when status becomes `resolved` |
+| created_at | timestamptz | DEFAULT now() | Audit timestamp |
+| updated_at | timestamptz | DEFAULT now() | Maintained by trigger |
 
 ### report_actions
 
@@ -201,3 +208,11 @@ Constraints:
 | action_details | text |  | Notes on the action |
 | actioned_by | uuid | NOT NULL REFERENCES users(id) | Operator performing the action |
 | actioned_at | timestamptz | DEFAULT now() | Timestamp |
+| created_at | timestamptz | DEFAULT now() | Audit timestamp |
+| updated_at | timestamptz | DEFAULT now() | Maintained by trigger |
+
+## Operational Notes
+
+- Row Level Security (RLS) remains disabled on all tables as required for this phase.
+- A shared trigger updates each table's `updated_at` column to `now()` on every UPDATE.
+- Supabase migrations remain the single source of truth; regenerate clients after applying new SQL.

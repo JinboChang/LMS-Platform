@@ -32,8 +32,18 @@ export const createSupabaseServerClient = async (): Promise<
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
-            if (typeof cookieStore.set === "function") {
+            if (typeof cookieStore.set !== "function") {
+              return;
+            }
+
+            try {
               cookieStore.set({ name, value, ...options });
+            } catch (error) {
+              // Next.js App Router에서는 서버 액션/라우트 핸들러 외부에서 쿠키를 수정할 수 없다.
+              // 해당 환경에서는 세션 쿠키 갱신을 건너뛰고, 이후 라우트 핸들러에서 다시 설정된다.
+              if (process.env.NODE_ENV !== "production") {
+                console.warn("Skipping cookie set outside writable context", error);
+              }
             }
           });
         },

@@ -1,31 +1,56 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
+import { onboardingRoles } from "@/features/onboarding/lib/dto";
 
 type LoginPageProps = {
   params: Promise<Record<string, never>>;
 };
 
+const isRoleValue = (
+  value: unknown
+): value is (typeof onboardingRoles)[number] =>
+  typeof value === "string" && onboardingRoles.includes(value as never);
+
 export default function LoginPage({ params }: LoginPageProps) {
   void params;
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { refresh, isAuthenticated } = useCurrentUser();
+  const { refresh, isAuthenticated, user } = useCurrentUser();
+  const resolvedRole = useMemo(() => {
+    const rawRole = user?.userMetadata?.role ?? user?.appMetadata?.role;
+
+    return isRoleValue(rawRole) ? rawRole : null;
+  }, [user?.appMetadata?.role, user?.userMetadata?.role]);
   const [formState, setFormState] = useState({ email: "", password: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      const redirectedFrom = searchParams.get("redirectedFrom") ?? "/";
-      router.replace(redirectedFrom);
+    if (!isAuthenticated) {
+      return;
     }
-  }, [isAuthenticated, router, searchParams]);
+
+    const redirectedFrom = searchParams.get("redirectedFrom");
+    const defaultPath = resolvedRole === "instructor" ? "/instructor/dashboard" : "/courses";
+    const shouldUseRedirectedFrom = redirectedFrom && redirectedFrom !== "/" && redirectedFrom !== "";
+    const targetPath = shouldUseRedirectedFrom ? redirectedFrom : defaultPath;
+
+    if (!resolvedRole) {
+      const fallback = shouldUseRedirectedFrom ? redirectedFrom : defaultPath;
+      router.replace(
+        `/onboarding?redirectedFrom=${encodeURIComponent(fallback)}`
+      );
+      return;
+    }
+
+    router.replace(targetPath);
+  }, [isAuthenticated, resolvedRole, router, searchParams]);
 
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,8 +79,6 @@ export default function LoginPage({ params }: LoginPageProps) {
 
         if (nextAction === "success") {
           await refresh();
-          const redirectedFrom = searchParams.get("redirectedFrom") ?? "/";
-          router.replace(redirectedFrom);
         } else {
           setErrorMessage(nextAction);
         }
@@ -65,7 +88,7 @@ export default function LoginPage({ params }: LoginPageProps) {
         setIsSubmitting(false);
       }
     },
-    [formState.email, formState.password, refresh, router, searchParams]
+    [formState.email, formState.password, refresh]
   );
 
   if (isAuthenticated) {

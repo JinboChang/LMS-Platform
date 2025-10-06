@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
+import { onboardingRoles } from "@/features/onboarding/lib/dto";
 
 const defaultFormState = {
   email: "",
@@ -17,11 +18,21 @@ type SignupPageProps = {
   params: Promise<Record<string, never>>;
 };
 
+const isRoleValue = (
+  value: unknown
+): value is (typeof onboardingRoles)[number] =>
+  typeof value === "string" && onboardingRoles.includes(value as never);
+
 export default function SignupPage({ params }: SignupPageProps) {
   void params;
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { isAuthenticated, refresh } = useCurrentUser();
+  const { isAuthenticated, refresh, user } = useCurrentUser();
+  const resolvedRole = useMemo(() => {
+    const rawRole = user?.userMetadata?.role ?? user?.appMetadata?.role;
+
+    return isRoleValue(rawRole) ? rawRole : null;
+  }, [user?.appMetadata?.role, user?.userMetadata?.role]);
   const [formState, setFormState] = useState(defaultFormState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -30,9 +41,17 @@ export default function SignupPage({ params }: SignupPageProps) {
   useEffect(() => {
     if (isAuthenticated) {
       const redirectedFrom = searchParams.get("redirectedFrom") ?? "/";
+
+      if (!resolvedRole) {
+        router.replace(
+          `/onboarding?redirectedFrom=${encodeURIComponent(redirectedFrom)}`
+        );
+        return;
+      }
+
       router.replace(redirectedFrom);
     }
-  }, [isAuthenticated, router, searchParams]);
+  }, [isAuthenticated, resolvedRole, router, searchParams]);
 
   const isSubmitDisabled = useMemo(
     () =>
@@ -80,9 +99,12 @@ export default function SignupPage({ params }: SignupPageProps) {
         await refresh();
 
         const redirectedFrom = searchParams.get("redirectedFrom") ?? "/";
+        const onboardingPath = `/onboarding?redirectedFrom=${encodeURIComponent(
+          redirectedFrom
+        )}`;
 
         if (result.data.session) {
-          router.replace(redirectedFrom);
+          router.replace(onboardingPath);
           return;
         }
 
@@ -90,6 +112,7 @@ export default function SignupPage({ params }: SignupPageProps) {
           "확인 이메일을 보냈습니다. 이메일 인증 후 로그인해 주세요."
         );
         router.prefetch("/login");
+        router.prefetch(onboardingPath);
         setFormState(defaultFormState);
       } catch (error) {
         setErrorMessage("회원가입 처리 중 문제가 발생했습니다.");

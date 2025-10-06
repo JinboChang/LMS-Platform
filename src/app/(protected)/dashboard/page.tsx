@@ -1,7 +1,13 @@
-"use client";
+﻿"use client";
 
-import Image from "next/image";
-import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
+import { AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { DashboardEmptyState } from "@/features/dashboard/components/dashboard-empty-state";
+import { DashboardSummary } from "@/features/dashboard/components/dashboard-summary";
+import { CourseProgressGrid } from "@/features/dashboard/components/course-progress-grid";
+import { UpcomingAssignments } from "@/features/dashboard/components/upcoming-assignments";
+import { RecentFeedback } from "@/features/dashboard/components/recent-feedback";
+import { useDashboardOverview } from "@/features/dashboard/hooks/useDashboardOverview";
 
 type DashboardPageProps = {
   params: Promise<Record<string, never>>;
@@ -9,40 +15,68 @@ type DashboardPageProps = {
 
 export default function DashboardPage({ params }: DashboardPageProps) {
   void params;
-  const { user } = useCurrentUser();
+  const overviewQuery = useDashboardOverview();
+
+  const courses = overviewQuery.data?.courses ?? [];
+  const upcomingAssignments = overviewQuery.data?.upcomingAssignments ?? [];
+  const recentFeedback = overviewQuery.data?.recentFeedback ?? [];
+
+  const shouldShowEmptyState =
+    overviewQuery.isSuccess && !overviewQuery.isFetching && courses.length === 0;
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-6 px-6 py-12">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-12">
       <header className="space-y-2">
-        <h1 className="text-3xl font-semibold">대시보드</h1>
-        <p className="text-slate-500">
-          {user?.email ?? "알 수 없는 사용자"} 님, 환영합니다.
+        <h1 className="text-3xl font-semibold">Learner dashboard</h1>
+        <p className="text-sm text-muted-foreground">
+          Track course progress, upcoming deadlines, and instructor feedback from a single view.
         </p>
       </header>
-      <div className="overflow-hidden rounded-xl border border-slate-200">
-        <Image
-          alt="대시보드"
-          src="https://picsum.photos/seed/dashboard/960/420"
-          width={960}
-          height={420}
-          className="h-auto w-full object-cover"
-        />
-      </div>
-      <section className="grid gap-4 md:grid-cols-2">
-        <article className="rounded-lg border border-slate-200 p-4">
-          <h2 className="text-lg font-medium">현재 세션</h2>
-          <p className="mt-2 text-sm text-slate-500">
-            Supabase 미들웨어가 세션 쿠키를 자동으로 동기화합니다.
-          </p>
-        </article>
-        <article className="rounded-lg border border-slate-200 p-4">
-          <h2 className="text-lg font-medium">보안 체크</h2>
-          <p className="mt-2 text-sm text-slate-500">
-            보호된 App Router 세그먼트로 라우팅되며, 로그인 사용
-            자만 접근할 수 있습니다.
-          </p>
-        </article>
-      </section>
+
+      {overviewQuery.isError ? (
+        <div className="flex flex-col gap-3 rounded-lg border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="h-5 w-5" aria-hidden />
+            <span>
+              {overviewQuery.error instanceof Error
+                ? overviewQuery.error.message
+                : "Failed to load dashboard data."}
+            </span>
+          </div>
+          <div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => overviewQuery.refetch()}
+              disabled={overviewQuery.isFetching}
+            >
+              Retry
+            </Button>
+          </div>
+        </div>
+      ) : null}
+
+      {overviewQuery.isLoading ? (
+        <div className="flex flex-col gap-8">
+          <DashboardSummary isLoading />
+          <CourseProgressGrid courses={[]} isLoading />
+          <section className="grid gap-6 lg:grid-cols-2">
+            <UpcomingAssignments assignments={[]} isLoading />
+            <RecentFeedback feedbackItems={[]} isLoading />
+          </section>
+        </div>
+      ) : shouldShowEmptyState ? (
+        <DashboardEmptyState />
+      ) : (
+        <div className="flex flex-col gap-8">
+          <DashboardSummary summary={overviewQuery.data?.summary} />
+          <CourseProgressGrid courses={courses} />
+          <section className="grid gap-6 lg:grid-cols-2">
+            <UpcomingAssignments assignments={upcomingAssignments} />
+            <RecentFeedback feedbackItems={recentFeedback} />
+          </section>
+        </div>
+      )}
     </div>
   );
 }

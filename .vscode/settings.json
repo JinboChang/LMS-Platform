@@ -1,0 +1,4 @@
+{
+    "terminal.integrated.enableMultiLinePasteWarning": "never",
+    "terminal.integrated.ignoreBracketedPasteMode": true
+}

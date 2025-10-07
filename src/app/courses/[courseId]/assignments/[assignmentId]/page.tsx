@@ -176,7 +176,7 @@ export default function AssignmentDetailPage({
     ? "재제출 시 기존 제출 내용이 교체됩니다."
     : "요구 사항을 확인한 뒤 제출해주세요.";
   let actionLabel = hasSubmission ? "재제출하기" : "제출하기";
-  let formDisabled = !canSubmit;
+  const formDisabled = !canSubmit;
 
   if (!canSubmit) {
     formTone = "destructive";

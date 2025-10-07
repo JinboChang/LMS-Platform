@@ -10,11 +10,15 @@ describe("supabase-admin helpers", () => {
     const mockClient = {
       auth: {
         admin: {
-          getUserByEmail: vi.fn(async () => ({
+          listUsers: vi.fn(async () => ({
             data: {
-              user: {
-                id: "user-id",
-              },
+              users: [
+                {
+                  id: "user-id",
+                  email: "user@example.com",
+                },
+              ],
+              nextPage: null,
             },
             error: null,
           })),
@@ -24,9 +28,10 @@ describe("supabase-admin helpers", () => {
 
     const result = await findAuthUserByEmail(mockClient, " User@example.com ");
 
-    expect(mockClient.auth.admin.getUserByEmail).toHaveBeenCalledWith(
-      "user@example.com"
-    );
+    expect(mockClient.auth.admin.listUsers).toHaveBeenCalledWith({
+      page: 1,
+      perPage: 200,
+    });
     expect(result?.id).toBe("user-id");
   });
 

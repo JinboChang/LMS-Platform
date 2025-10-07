@@ -46,9 +46,13 @@ const normalizeScoreWeight = (value: unknown) => {
 const toWeightInteger = (value: number) => Math.round(value * 100);
 const fromWeightInteger = (value: number) => value / 100;
 
-const sumScoreWeightRows = (rows: { score_weight: number }[]) =>
+const sumScoreWeightRows = (rows: Array<{ score_weight?: number | null }>) =>
   fromWeightInteger(
-    rows.reduce((acc, row) => acc + toWeightInteger(row.score_weight), 0),
+    rows.reduce((acc, row) => {
+      const weight = typeof row.score_weight === "number" ? row.score_weight : 0;
+
+      return acc + toWeightInteger(weight);
+    }, 0),
   );
 
 const normalizeTimestamp = (value: unknown): unknown => {
@@ -100,6 +104,8 @@ const coerceAssignmentRow = (row: Record<string, unknown>) => ({
   due_at: normalizeTimestamp((row as { due_at?: unknown }).due_at),
   created_at: normalizeTimestamp((row as { created_at?: unknown }).created_at),
   updated_at: normalizeTimestamp((row as { updated_at?: unknown }).updated_at),
+  published_at: normalizeTimestamp((row as { published_at?: unknown }).published_at),
+  closed_at: normalizeTimestamp((row as { closed_at?: unknown }).closed_at),
 });
 
 const buildStatusCounts = (assignments: AssignmentTableRow[]) =>
@@ -128,6 +134,8 @@ const normalizeAssignment = (row: AssignmentTableRow): AssignmentListItem => ({
   status: row.status,
   createdAt: row.created_at,
   updatedAt: row.updated_at,
+  publishedAt: row.published_at ?? null,
+  closedAt: row.closed_at ?? null,
   submissionStats: {
     total: 0,
     pending: 0,
@@ -241,7 +249,7 @@ export const listInstructorAssignments = async (
   const { data, error } = await client
     .from(ASSIGNMENTS_TABLE)
     .select(
-      'id, course_id, title, description, due_at, score_weight, instructions, submission_requirements, late_submission_allowed, status, created_at, updated_at',
+      'id, course_id, title, description, due_at, score_weight, instructions, submission_requirements, late_submission_allowed, status, created_at, updated_at, published_at, closed_at',
     )
     .eq('course_id', courseId)
     .order('due_at', { ascending: true });
@@ -281,7 +289,7 @@ export const getInstructorAssignment = async (
   const { data, error } = await client
     .from(ASSIGNMENTS_TABLE)
     .select(
-      'id, course_id, title, description, due_at, score_weight, instructions, submission_requirements, late_submission_allowed, status, created_at, updated_at',
+      'id, course_id, title, description, due_at, score_weight, instructions, submission_requirements, late_submission_allowed, status, created_at, updated_at, published_at, closed_at',
     )
     .eq('course_id', courseId)
     .eq('id', assignmentId)
@@ -334,7 +342,7 @@ export const createInstructorAssignment = async (
     .from(ASSIGNMENTS_TABLE)
     .insert(insertPayload)
     .select(
-      'id, course_id, title, description, due_at, score_weight, instructions, submission_requirements, late_submission_allowed, status, created_at, updated_at',
+      'id, course_id, title, description, due_at, score_weight, instructions, submission_requirements, late_submission_allowed, status, created_at, updated_at, published_at, closed_at',
     )
     .single();
 
@@ -420,7 +428,7 @@ export const findInstructorAssignmentByTitle = async (
   let query = client
     .from(ASSIGNMENTS_TABLE)
     .select(
-      'id, course_id, title, description, due_at, score_weight, instructions, submission_requirements, late_submission_allowed, status, created_at, updated_at',
+      'id, course_id, title, description, due_at, score_weight, instructions, submission_requirements, late_submission_allowed, status, created_at, updated_at, published_at, closed_at',
     )
     .eq('course_id', courseId)
     .eq('title', normalizedTitle)
@@ -454,6 +462,67 @@ export const findInstructorAssignmentByTitle = async (
   return parsed.data;
 };
 
+type UpdateAssignmentStatusPayload = {
+  status: AssignmentStatus;
+  publishedAt?: string | null;
+  closedAt?: string | null;
+};
+
+export const updateInstructorAssignmentStatus = async (
+  client: SupabaseClient,
+  courseId: string,
+  assignmentId: string,
+  payload: UpdateAssignmentStatusPayload,
+): Promise<AssignmentResponse> => {
+  const updatePayload: Record<string, unknown> = {
+    status: payload.status,
+  };
+
+  if (payload.publishedAt !== undefined) {
+    updatePayload.published_at = payload.publishedAt;
+  }
+
+  if (payload.closedAt !== undefined) {
+    updatePayload.closed_at = payload.closedAt;
+  }
+
+  const { data, error } = await client
+    .from(ASSIGNMENTS_TABLE)
+    .update(updatePayload)
+    .eq('course_id', courseId)
+    .eq('id', assignmentId)
+    .select(
+      'id, course_id, title, description, due_at, score_weight, instructions, submission_requirements, late_submission_allowed, status, created_at, updated_at, published_at, closed_at',
+    )
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data) {
+    throw new Error('Failed to update assignment status.');
+  }
+
+  const parsed = AssignmentTableRowSchema.safeParse(
+    coerceAssignmentRow(data as Record<string, unknown>),
+  );
+
+  if (!parsed.success) {
+    throw parsed.error;
+  }
+
+  const [aggregate] = await fetchSubmissionAggregates(client, [assignmentId]);
+  const assignment = mapSubmissionAggregates(
+    [normalizeAssignment(parsed.data)],
+    aggregate ? [aggregate] : [],
+  )[0];
+
+  return AssignmentResponseSchema.parse({
+    assignment,
+  });
+};
+
 export const updateInstructorAssignment = async (
   client: SupabaseClient,
   courseId: string,
@@ -470,7 +539,6 @@ export const updateInstructorAssignment = async (
     updatePayload.description = payload.description;
   }
 
-  if (payload.dueAt !== undefined)
   if (payload.dueAt !== undefined) {
     updatePayload.due_at = payload.dueAt;
   }
@@ -501,7 +569,7 @@ export const updateInstructorAssignment = async (
     .eq('course_id', courseId)
     .eq('id', assignmentId)
     .select(
-      'id, course_id, title, description, due_at, score_weight, instructions, submission_requirements, late_submission_allowed, status, created_at, updated_at',
+      'id, course_id, title, description, due_at, score_weight, instructions, submission_requirements, late_submission_allowed, status, created_at, updated_at, published_at, closed_at',
     )
     .single();
 

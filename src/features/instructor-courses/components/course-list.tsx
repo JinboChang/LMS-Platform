@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import { PencilLine } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -137,15 +138,22 @@ export const CourseList = ({
                     </div>
                   </div>
 
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onEdit(course)}
-                    className="inline-flex items-center gap-2"
-                  >
-                    <PencilLine className="h-4 w-4" />
-                    Edit
-                  </Button>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onEdit(course)}
+                      className="inline-flex items-center gap-2"
+                    >
+                      <PencilLine className="h-4 w-4" />
+                      Edit
+                    </Button>
+                    <Button asChild variant="outline" size="sm">
+                      <Link href={`/instructor/courses/${course.id}/assignments`}>
+                        Assignments
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
 
                 <div className="grid gap-3 md:grid-cols-[1.2fr,1fr]">

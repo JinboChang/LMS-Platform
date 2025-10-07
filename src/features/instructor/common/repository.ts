@@ -16,6 +16,14 @@ export type InstructorProfile = {
   authUserId: string;
 };
 
+const CoursesTableRowSchema = z.object({
+  id: z.string().uuid(),
+  instructor_id: z.string().uuid(),
+  title: z.string().min(1),
+});
+
+export type InstructorCourseRow = z.infer<typeof CoursesTableRowSchema>;
+
 export const fetchInstructorProfileByAuthId = async (
   client: SupabaseClient,
   authUserId: string,
@@ -45,4 +53,33 @@ export const fetchInstructorProfileByAuthId = async (
     instructorId: parsed.data.id,
     authUserId: parsed.data.auth_user_id,
   } satisfies InstructorProfile;
+};
+
+export const fetchInstructorCourseById = async (
+  client: SupabaseClient,
+  instructorId: string,
+  courseId: string,
+): Promise<InstructorCourseRow | null> => {
+  const { data, error } = await client
+    .from('courses')
+    .select('id, instructor_id, title')
+    .eq('id', courseId)
+    .eq('instructor_id', instructorId)
+    .maybeSingle<InstructorCourseRow>();
+
+  if (error) {
+    throw new Error(error.message ?? 'Failed to verify course ownership.');
+  }
+
+  if (!data) {
+    return null;
+  }
+
+  const parsed = CoursesTableRowSchema.safeParse(data);
+
+  if (!parsed.success) {
+    throw parsed.error;
+  }
+
+  return parsed.data;
 };

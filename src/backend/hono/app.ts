@@ -12,6 +12,7 @@ import { registerOnboardingRoutes } from '@/features/onboarding/backend/route';
 import { registerGradeRoutes } from '@/features/grades/backend/route';
 import { registerInstructorDashboardRoutes } from '@/features/instructor-dashboard/backend/route';
 import { registerInstructorCourseRoutes } from '@/features/instructor-courses/backend/route';
+import { registerInstructorAssignmentRoutes } from '@/features/instructor-assignments/backend/route';
 
 let singletonApp: Hono<AppEnv> | null = null;
 
@@ -40,6 +41,7 @@ export const createHonoApp = () => {
   registerGradeRoutes(api);
   registerInstructorDashboardRoutes(api);
   registerInstructorCourseRoutes(api);
+  registerInstructorAssignmentRoutes(api);
 
   if (process.env.NODE_ENV === 'production') {
     singletonApp = app;

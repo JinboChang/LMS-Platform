@@ -42,6 +42,7 @@ graph TD
 ### Backend
 1. `schema.ts`
    - `CreateAssignmentRequest`(title, description, dueAt, scoreWeight, instructions, submissionRequirements, lateSubmissionAllowed)
+   - 코스 전체 가중치 합계 100% 초과 및 제목 중복 생성 방지 로직 강화.
    - `UpdateAssignmentRequest`(partial update)
    - `ChangeAssignmentStatusRequest`(`nextStatus`)
    - `AssignmentResponse`
@@ -51,7 +52,8 @@ graph TD
    - `createAssignment(courseId, payload)` → 기본 `status='draft'`
    - `updateAssignment(assignmentId, payload)`
    - `getAssignment(assignmentId)`
-   - `listAssignments(courseId)`
+   - `listAssignments(courseId)
+  - 코스 내 과제 제목 중복 조회 및 가중치 합계 계산 유틸 추가.`
    - **Unit Test**: Supabase 호출 파라미터/조건 검증.
 
 3. `service.ts`

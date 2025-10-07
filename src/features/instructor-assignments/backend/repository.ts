@@ -270,6 +270,9 @@ export const listInstructorAssignments = async (
     .order('due_at', { ascending: true });
 
   if (error) {
+    if (isPostgrestError(error)) {
+      throwIfTimelineColumnsMissing(error);
+    }
     throw new Error(error.message ?? 'Failed to fetch assignments.');
   }
 
@@ -311,6 +314,9 @@ export const getInstructorAssignment = async (
     .maybeSingle();
 
   if (error) {
+    if (isPostgrestError(error)) {
+      throwIfTimelineColumnsMissing(error);
+    }
     throw new Error(error.message ?? 'Failed to fetch assignment.');
   }
 
@@ -362,6 +368,9 @@ export const createInstructorAssignment = async (
     .single();
 
   if (error) {
+    if (isPostgrestError(error)) {
+      throwIfTimelineColumnsMissing(error);
+    }
     throw error;
   }
 
@@ -405,6 +414,9 @@ export const getCourseAssignmentScoreWeightTotal = async (
   const { data, error } = await query;
 
   if (error) {
+    if (isPostgrestError(error)) {
+      throwIfTimelineColumnsMissing(error);
+    }
     throw new Error(error.message ?? 'Failed to fetch assignment score weights.');
   }
 
@@ -457,6 +469,9 @@ export const findInstructorAssignmentByTitle = async (
   const { data, error } = await query;
 
   if (error) {
+    if (isPostgrestError(error)) {
+      throwIfTimelineColumnsMissing(error);
+    }
     throw new Error(error.message ?? 'Failed to verify assignment title.');
   }
 
@@ -512,6 +527,9 @@ export const updateInstructorAssignmentStatus = async (
     .single();
 
   if (error) {
+    if (isPostgrestError(error)) {
+      throwIfTimelineColumnsMissing(error);
+    }
     throw error;
   }
 

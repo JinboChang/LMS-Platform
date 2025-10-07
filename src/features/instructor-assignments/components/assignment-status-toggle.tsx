@@ -3,15 +3,10 @@
 import { Button } from "@/components/ui/button";
 import type { AssignmentStatus } from "@/features/instructor-assignments/lib/dto";
 
-const statusLabels: Record<AssignmentStatus, string> = {
+const actionLabels: Record<AssignmentStatus, string> = {
   draft: "Publish",
   published: "Close submissions",
   closed: "Closed",
-};
-
-const statusConfirmMessages: Partial<Record<AssignmentStatus, string>> = {
-  published: "Publish this assignment so learners can view and submit?",
-  closed: "Close submissions for this assignment?",
 };
 
 type AssignmentStatusToggleProps = {
@@ -19,7 +14,7 @@ type AssignmentStatusToggleProps = {
   currentStatus: AssignmentStatus;
   allowedTransitions: readonly AssignmentStatus[];
   isUpdating?: boolean;
-  onChange: (assignmentId: string, nextStatus: AssignmentStatus) => void;
+  onSelect: (assignmentId: string, nextStatus: AssignmentStatus) => void;
 };
 
 export const AssignmentStatusToggle = ({
@@ -27,7 +22,7 @@ export const AssignmentStatusToggle = ({
   currentStatus,
   allowedTransitions,
   isUpdating = false,
-  onChange,
+  onSelect,
 }: AssignmentStatusToggleProps) => {
   if (allowedTransitions.length === 0) {
     return (
@@ -48,16 +43,12 @@ export const AssignmentStatusToggle = ({
           variant={status === "published" ? "default" : "outline"}
           disabled={isUpdating}
           onClick={() => {
-            const confirmationMessage = statusConfirmMessages[status];
-
-            if (confirmationMessage && !window.confirm(confirmationMessage)) {
-              return;
+            if (!isUpdating) {
+              onSelect(assignmentId, status);
             }
-
-            onChange(assignmentId, status);
           }}
         >
-          {isUpdating ? "Updating…" : statusLabels[status]}
+          {isUpdating ? "Updating…" : actionLabels[status]}
         </Button>
       ))}
     </div>

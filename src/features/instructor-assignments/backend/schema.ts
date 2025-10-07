@@ -21,6 +21,8 @@ export const AssignmentTableRowSchema = z.object({
   status: AssignmentStatusSchema,
   created_at: z.string().datetime(),
   updated_at: z.string().datetime(),
+  published_at: z.string().datetime().nullable().optional(),
+  closed_at: z.string().datetime().nullable().optional(),
 });
 
 export const AssignmentSubmissionAggregateSchema = z.object({
@@ -44,6 +46,8 @@ export const AssignmentListItemSchema = z.object({
   status: AssignmentStatusSchema,
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
+  publishedAt: z.string().datetime().nullable(),
+  closedAt: z.string().datetime().nullable(),
   submissionStats: z.object({
     total: z.number().int().nonnegative(),
     pending: z.number().int().nonnegative(),
@@ -95,10 +99,6 @@ export const UpdateAssignmentRequestSchema = z
     message: 'At least one field must be provided.',
   });
 
-export const ChangeAssignmentStatusRequestSchema = z.object({
-  nextStatus: AssignmentStatusSchema,
-});
-
 export type AssignmentStatus = z.infer<typeof AssignmentStatusSchema>;
 export type AssignmentTableRow = z.infer<typeof AssignmentTableRowSchema>;
 export type AssignmentListItem = z.infer<typeof AssignmentListItemSchema>;
@@ -106,9 +106,6 @@ export type AssignmentListResponse = z.infer<typeof AssignmentListResponseSchema
 export type AssignmentResponse = z.infer<typeof AssignmentResponseSchema>;
 export type CreateAssignmentRequest = z.infer<typeof CreateAssignmentRequestSchema>;
 export type UpdateAssignmentRequest = z.infer<typeof UpdateAssignmentRequestSchema>;
-export type ChangeAssignmentStatusRequest = z.infer<
-  typeof ChangeAssignmentStatusRequestSchema
->;
 export type AssignmentSubmissionAggregate = z.infer<
   typeof AssignmentSubmissionAggregateSchema
 >;

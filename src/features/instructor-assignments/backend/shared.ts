@@ -31,13 +31,15 @@ export const validatePublishReadiness = (assignment: PublishValidationCandidate)
     assignment.submissionRequirements,
   ].every((value) => typeof value === 'string' && value.trim().length > 0) &&
   typeof assignment.scoreWeight === 'number' &&
-  Number.isFinite(assignment.scoreWeight);
+  Number.isFinite(assignment.scoreWeight) &&
+  typeof assignment.lateSubmissionAllowed === 'boolean';
 
 export const validateStatusTransition = (
   currentStatus: AssignmentStatus,
   nextStatus: AssignmentStatus,
 ) => {
-  const allowed = ASSIGNMENT_STATUS_TRANSITIONS[currentStatus] ?? [];
+  const allowed: readonly AssignmentStatus[] =
+    ASSIGNMENT_STATUS_TRANSITIONS[currentStatus] ?? [];
   return allowed.includes(nextStatus);
 };
 
@@ -109,4 +111,3 @@ export const ensureCourseOwnership = async (
     return null;
   }
 };
-

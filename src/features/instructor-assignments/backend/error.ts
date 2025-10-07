@@ -13,6 +13,8 @@ export const instructorAssignmentsErrorCodes = {
   duplicateAssignment: 'INSTRUCTOR_ASSIGNMENTS_DUPLICATE_ASSIGNMENT',
   scoreWeightExceeded: 'INSTRUCTOR_ASSIGNMENTS_SCORE_WEIGHT_EXCEEDED',
   statusTransitionInvalid: 'INSTRUCTOR_ASSIGNMENTS_STATUS_TRANSITION_INVALID',
+  publishRequirementsIncomplete:
+    'INSTRUCTOR_ASSIGNMENTS_PUBLISH_REQUIREMENTS_INCOMPLETE',
 } as const;
 
 export type InstructorAssignmentsErrorCode =

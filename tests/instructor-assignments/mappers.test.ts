@@ -20,6 +20,8 @@ describe('mapAssignmentListResponse', () => {
           status: 'draft',
           createdAt: now,
           updatedAt: now,
+          publishedAt: null,
+          closedAt: null,
           submissionStats: {
             total: 4,
             pending: 2,

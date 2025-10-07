@@ -14,8 +14,10 @@ import { AssignmentList } from "@/features/instructor-assignments/components/ass
 import { useAssignments } from "@/features/instructor-assignments/hooks/useAssignments";
 import { useCreateAssignment } from "@/features/instructor-assignments/hooks/useCreateAssignment";
 import { useUpdateAssignment } from "@/features/instructor-assignments/hooks/useUpdateAssignment";
-import { useChangeAssignmentStatus } from "@/features/instructor-assignments/hooks/useChangeAssignmentStatus";
+import { useAssignmentStatusMutation } from "@/features/instructor-assignments/hooks/useAssignmentStatusMutation";
+import { AssignmentStatusDialog } from "@/features/instructor-assignments/components/assignment-status-dialog";
 import type { InstructorAssignmentSummary } from "@/features/instructor-assignments/lib/mappers";
+import type { AssignmentStatus } from "@/features/instructor-assignments/lib/dto";
 import type { AssignmentFormValues } from "@/features/instructor-assignments/lib/validators";
 import { toast } from "@/hooks/use-toast";
 
@@ -37,12 +39,17 @@ export const AssignmentsPageShell = ({ courseId }: AssignmentsPageShellProps) =>
   const assignmentsQuery = useAssignments(courseId);
   const createAssignmentMutation = useCreateAssignment(courseId);
   const updateAssignmentMutation = useUpdateAssignment(courseId);
-  const changeStatusMutation = useChangeAssignmentStatus(courseId);
+  const assignmentStatusMutation = useAssignmentStatusMutation(courseId);
 
   const [sheetOpen, setSheetOpen] = useState(false);
   const [mode, setMode] = useState<"create" | "edit">("create");
   const [selectedAssignment, setSelectedAssignment] =
     useState<InstructorAssignmentSummary | null>(null);
+  const [statusDialogOpen, setStatusDialogOpen] = useState(false);
+  const [statusTarget, setStatusTarget] = useState<{
+    assignment: InstructorAssignmentSummary;
+    nextStatus: AssignmentStatus;
+  } | null>(null);
 
   useEffect(() => {
     if (!sheetOpen) {
@@ -86,20 +93,28 @@ export const AssignmentsPageShell = ({ courseId }: AssignmentsPageShellProps) =>
     }
   };
 
-  const handleStatusChange = async (
-    assignmentId: string,
-    nextStatus: InstructorAssignmentSummary["status"],
+  const handleStatusSelection = (
+    assignment: InstructorAssignmentSummary,
+    nextStatus: AssignmentStatus,
   ) => {
+    setStatusTarget({ assignment, nextStatus });
+    setStatusDialogOpen(true);
+  };
+
+  const handleStatusConfirm = async () => {
+    if (!statusTarget) {
+      return;
+    }
+
     try {
-      await changeStatusMutation.mutateAsync({ assignmentId, nextStatus });
-    } catch (error) {
-      if (error instanceof Error) {
-        toast({
-          title: "Status update failed",
-          description: error.message,
-          variant: "destructive",
-        });
-      }
+      await assignmentStatusMutation.mutateAsync({
+        assignmentId: statusTarget.assignment.id,
+        nextStatus: statusTarget.nextStatus,
+      });
+      setStatusDialogOpen(false);
+      setStatusTarget(null);
+    } catch {
+      // 오류 토스트는 훅에서 처리하므로 별도 처리 없음
     }
   };
 
@@ -166,11 +181,11 @@ export const AssignmentsPageShell = ({ courseId }: AssignmentsPageShellProps) =>
           }
         }
         onEdit={handleEditAssignment}
-        onChangeStatus={handleStatusChange}
+        onSelectStatus={handleStatusSelection}
         isLoading={assignmentsQuery.isLoading}
         updatingAssignmentId={
-          changeStatusMutation.isPending
-            ? changeStatusMutation.variables?.assignmentId ?? null
+          assignmentStatusMutation.isPending
+            ? assignmentStatusMutation.variables?.assignmentId ?? null
             : null
         }
       />
@@ -196,6 +211,18 @@ export const AssignmentsPageShell = ({ courseId }: AssignmentsPageShellProps) =>
           </div>
         </SheetContent>
       </Sheet>
+
+      <AssignmentStatusDialog
+        open={statusDialogOpen}
+        assignment={statusTarget?.assignment ?? null}
+        targetStatus={statusTarget?.nextStatus ?? null}
+        onClose={() => {
+          setStatusDialogOpen(false);
+          setStatusTarget(null);
+        }}
+        onConfirm={handleStatusConfirm}
+        isProcessing={assignmentStatusMutation.isPending}
+      />
     </div>
   );
 };

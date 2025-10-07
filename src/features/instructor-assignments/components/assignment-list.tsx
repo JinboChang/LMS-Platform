@@ -1,16 +1,15 @@
 "use client";
 
 import { Calendar, ClipboardList, PencilLine } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AssignmentStatusToggle } from "@/features/instructor-assignments/components/assignment-status-toggle";
-import type { InstructorAssignmentListViewModel, InstructorAssignmentSummary } from "@/features/instructor-assignments/lib/mappers";
+import { AssignmentStatusBadge } from "@/features/instructor-assignments/components/assignment-status-badge";
+import type {
+  InstructorAssignmentListViewModel,
+  InstructorAssignmentSummary,
+} from "@/features/instructor-assignments/lib/mappers";
+import type { AssignmentStatus } from "@/features/instructor-assignments/lib/dto";
 
 const statusOrder: InstructorAssignmentSummary["status"][] = [
   "draft",
@@ -22,9 +21,9 @@ type AssignmentListProps = {
   assignments: InstructorAssignmentSummary[];
   statusCounts: InstructorAssignmentListViewModel["statusCounts"];
   onEdit: (assignment: InstructorAssignmentSummary) => void;
-  onChangeStatus: (
-    assignmentId: string,
-    nextStatus: InstructorAssignmentSummary["status"],
+  onSelectStatus: (
+    assignment: InstructorAssignmentSummary,
+    nextStatus: AssignmentStatus,
   ) => void;
   isLoading?: boolean;
   updatingAssignmentId?: string | null;
@@ -57,7 +56,7 @@ export const AssignmentList = ({
   assignments,
   statusCounts,
   onEdit,
-  onChangeStatus,
+  onSelectStatus,
   isLoading = false,
   updatingAssignmentId = null,
 }: AssignmentListProps) => {
@@ -104,9 +103,11 @@ export const AssignmentList = ({
                     <CardTitle className="text-lg font-semibold">
                       {assignment.title}
                     </CardTitle>
-                    <Badge variant={assignment.statusBadgeVariant}>
-                      {assignment.statusLabel}
-                    </Badge>
+                    <AssignmentStatusBadge
+                      status={assignment.status}
+                      publishedAt={assignment.publishedAt}
+                      closedAt={assignment.closedAt}
+                    />
                   </div>
                   <p className="text-sm text-muted-foreground">
                     {assignment.statusDescription}
@@ -177,7 +178,9 @@ export const AssignmentList = ({
                     assignmentId={assignment.id}
                     currentStatus={assignment.status}
                     allowedTransitions={assignment.allowedTransitions}
-                    onChange={onChangeStatus}
+                    onSelect={(assignmentId, nextStatus) => {
+                      onSelectStatus(assignment, nextStatus);
+                    }}
                     isUpdating={updatingAssignmentId === assignment.id}
                   />
                 </div>

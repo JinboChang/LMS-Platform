@@ -1,10 +1,10 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { changeInstructorAssignmentStatus } from '@/features/instructor-assignments/backend/service';
+import { changeInstructorAssignmentStatus } from '@/features/instructor-assignments/backend/status-service';
 import { instructorAssignmentsErrorCodes } from '@/features/instructor-assignments/backend/error';
 import { fetchInstructorProfileByAuthId, fetchInstructorCourseById } from '@/features/instructor/common/repository';
 import {
   getInstructorAssignment,
-  updateInstructorAssignment,
+  updateInstructorAssignmentStatus,
 } from '@/features/instructor-assignments/backend/repository';
 
 vi.mock('@/features/instructor/common/repository', () => ({
@@ -16,7 +16,7 @@ vi.mock('@/features/instructor-assignments/backend/repository', () => ({
   listInstructorAssignments: vi.fn(),
   createInstructorAssignment: vi.fn(),
   getInstructorAssignment: vi.fn(),
-  updateInstructorAssignment: vi.fn(),
+  updateInstructorAssignmentStatus: vi.fn(),
 }));
 
 type MockClient = {
@@ -36,6 +36,7 @@ const createMockClient = (): MockClient => ({
 
 afterEach(() => {
   vi.resetAllMocks();
+  vi.useRealTimers();
 });
 
 describe('changeInstructorAssignmentStatus', () => {
@@ -51,31 +52,28 @@ describe('changeInstructorAssignmentStatus', () => {
       instructor_id: 'instructor-id',
       title: 'Course',
     } as never);
+    const now = new Date().toISOString();
     vi.mocked(getInstructorAssignment).mockResolvedValue({
       id: 'assignment-id',
       courseId: 'course-id',
       title: 'Assignment',
       description: 'Description',
-      dueAt: new Date().toISOString(),
+      dueAt: now,
       scoreWeight: 10,
       instructions: 'Instructions',
       submissionRequirements: 'Requirements',
       lateSubmissionAllowed: false,
       status: 'published',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
+      publishedAt: now,
+      closedAt: null,
       submissionStats: {
         total: 0,
         pending: 0,
         graded: 0,
         late: 0,
       },
-      statusLabel: 'Published',
-      statusDescription: '',
-      statusBadgeVariant: 'default',
-      dueDateLabel: '',
-      dueDateRelativeLabel: '',
-      allowedTransitions: ['closed'],
     });
 
     const result = await changeInstructorAssignmentStatus({
@@ -108,31 +106,28 @@ describe('changeInstructorAssignmentStatus', () => {
       instructor_id: 'instructor-id',
       title: 'Course',
     } as never);
+    const now = new Date().toISOString();
     vi.mocked(getInstructorAssignment).mockResolvedValue({
       id: 'assignment-id',
       courseId: 'course-id',
       title: '',
       description: '',
-      dueAt: new Date().toISOString(),
+      dueAt: now,
       scoreWeight: 10,
       instructions: '',
       submissionRequirements: '',
       lateSubmissionAllowed: false,
       status: 'draft',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
+      publishedAt: null,
+      closedAt: null,
       submissionStats: {
         total: 0,
         pending: 0,
         graded: 0,
         late: 0,
       },
-      statusLabel: 'Draft',
-      statusDescription: '',
-      statusBadgeVariant: 'secondary',
-      dueDateLabel: '',
-      dueDateRelativeLabel: '',
-      allowedTransitions: ['published'],
     });
 
     const result = await changeInstructorAssignmentStatus({
@@ -147,11 +142,18 @@ describe('changeInstructorAssignmentStatus', () => {
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect(result.status).toBe(409);
+      expect(result.error.code).toBe(
+        instructorAssignmentsErrorCodes.publishRequirementsIncomplete,
+      );
     }
   });
 
   it('updates status when transition is valid', async () => {
     const client = createMockClient();
+
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2025-01-01T00:00:00.000Z'));
+    const expectedPublishedAt = new Date().toISOString();
 
     vi.mocked(fetchInstructorProfileByAuthId).mockResolvedValue({
       instructorId: 'instructor-id',
@@ -162,46 +164,45 @@ describe('changeInstructorAssignmentStatus', () => {
       instructor_id: 'instructor-id',
       title: 'Course',
     } as never);
+    const now = new Date().toISOString();
     vi.mocked(getInstructorAssignment).mockResolvedValue({
       id: 'assignment-id',
       courseId: 'course-id',
       title: 'Assignment',
       description: 'Description',
-      dueAt: new Date().toISOString(),
+      dueAt: now,
       scoreWeight: 10,
       instructions: 'Instructions',
       submissionRequirements: 'Requirements',
       lateSubmissionAllowed: false,
       status: 'draft',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: now,
+      updatedAt: now,
+      publishedAt: null,
+      closedAt: null,
       submissionStats: {
         total: 0,
         pending: 0,
         graded: 0,
         late: 0,
       },
-      statusLabel: 'Draft',
-      statusDescription: '',
-      statusBadgeVariant: 'secondary',
-      dueDateLabel: '',
-      dueDateRelativeLabel: '',
-      allowedTransitions: ['published'],
     });
-    vi.mocked(updateInstructorAssignment).mockResolvedValue({
+    vi.mocked(updateInstructorAssignmentStatus).mockResolvedValue({
       assignment: {
         id: 'assignment-id',
         courseId: 'course-id',
         title: 'Assignment',
         description: 'Description',
-        dueAt: new Date().toISOString(),
+        dueAt: now,
         scoreWeight: 10,
         instructions: 'Instructions',
         submissionRequirements: 'Requirements',
         lateSubmissionAllowed: false,
         status: 'published',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        createdAt: now,
+        updatedAt: expectedPublishedAt,
+        publishedAt: expectedPublishedAt,
+        closedAt: null,
         submissionStats: {
           total: 0,
           pending: 0,
@@ -221,14 +222,16 @@ describe('changeInstructorAssignmentStatus', () => {
     });
 
     expect(result.ok).toBe(true);
-    expect(updateInstructorAssignment).toHaveBeenCalledWith(
+    expect(updateInstructorAssignmentStatus).toHaveBeenCalledWith(
       client,
       'course-id',
       'assignment-id',
-      { status: 'published' },
+      { status: 'published', publishedAt: expectedPublishedAt, closedAt: null },
     );
     if (result.ok) {
-      expect(result.data.assignment.status).toBe('published');
+      expect(result.data.status).toBe('published');
+      expect(result.data.publishedAt).toBe(expectedPublishedAt);
+      expect(result.data.closedAt).toBeNull();
     }
   });
 });

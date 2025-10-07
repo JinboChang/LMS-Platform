@@ -130,7 +130,11 @@ export const GradingPanel = ({ submission, onSubmit, isSubmitting = false }: Gra
                     step="0.1"
                     min={0}
                     max={100}
-                    value={field.value === "" ? "" : String(field.value ?? "")}
+                    value={
+                      typeof field.value === "number"
+                        ? String(field.value)
+                        : field.value ?? ""
+                    }
                     onChange={(event) => field.onChange(event.target.value)}
                   />
                 </FormControl>
@@ -149,7 +153,11 @@ export const GradingPanel = ({ submission, onSubmit, isSubmitting = false }: Gra
                   <Textarea
                     rows={6}
                     placeholder="Share what went well and what can be improved."
-                    value={field.value === "" ? "" : String(field.value ?? "")}
+                    value={
+                      typeof field.value === "string"
+                        ? field.value
+                        : field.value ?? ""
+                    }
                     onChange={(event) => field.onChange(event.target.value)}
                   />
                 </FormControl>

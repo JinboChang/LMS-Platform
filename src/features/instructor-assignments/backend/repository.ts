@@ -121,28 +121,29 @@ const buildStatusCounts = (assignments: AssignmentTableRow[]) =>
     } as Record<AssignmentStatus, number>,
   );
 
-const normalizeAssignment = (row: AssignmentTableRow): AssignmentListItem => ({
-  id: row.id,
-  courseId: row.course_id,
-  title: row.title,
-  description: row.description,
-  dueAt: row.due_at,
-  scoreWeight: row.score_weight,
-  instructions: row.instructions,
-  submissionRequirements: row.submission_requirements,
-  lateSubmissionAllowed: row.late_submission_allowed,
-  status: row.status,
-  createdAt: row.created_at,
-  updatedAt: row.updated_at,
-  publishedAt: row.published_at ?? null,
-  closedAt: row.closed_at ?? null,
-  submissionStats: {
-    total: 0,
-    pending: 0,
-    graded: 0,
-    late: 0,
-  },
-});
+const normalizeAssignment = (row: AssignmentTableRow): AssignmentListItem =>
+  AssignmentListItemSchema.parse({
+    id: row.id,
+    courseId: row.course_id,
+    title: row.title,
+    description: row.description,
+    dueAt: row.due_at,
+    scoreWeight: row.score_weight,
+    instructions: row.instructions,
+    submissionRequirements: row.submission_requirements,
+    lateSubmissionAllowed: row.late_submission_allowed,
+    status: row.status,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    publishedAt: row.published_at ?? null,
+    closedAt: row.closed_at ?? null,
+    submissionStats: {
+      total: 0,
+      pending: 0,
+      graded: 0,
+      late: 0,
+    },
+  });
 
 const aggregateSubmissionStats = (
   rows: { assignment_id: string; status: string; late: boolean | null }[],

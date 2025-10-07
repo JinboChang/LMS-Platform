@@ -1,4 +1,4 @@
-﻿import { z } from 'zod';
+import { z } from 'zod';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import {
   SubmissionDetailSchema,
@@ -28,17 +28,23 @@ const SubmissionLearnerSchema = z.object({
   email: z.string().email().nullable(),
 });
 
-const scorePreprocessor = z.preprocess((value) => {
+const ScoreSchema = z.preprocess((value) => {
   if (value === null || value === undefined) {
     return null;
   }
 
-  if (typeof value === 'number' && Number.isFinite(value)) {
+  if (typeof value === 'number') {
     return value;
   }
 
-  if (typeof value === 'string' && value.trim().length > 0) {
-    const numericValue = Number(value);
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+
+    if (trimmed.length === 0) {
+      return null;
+    }
+
+    const numericValue = Number(trimmed);
 
     if (Number.isFinite(numericValue)) {
       return numericValue;
@@ -56,7 +62,7 @@ const SubmissionRowSchema = z.object({
   submission_link: z.string().nullable(),
   status: SubmissionStatusSchema,
   late: z.boolean(),
-  score: scorePreprocessor,
+  score: ScoreSchema,
   feedback_text: z.string().nullable(),
   submitted_at: z.string(),
   graded_at: z.string().nullable(),
@@ -115,70 +121,93 @@ const toIsoString = (value: unknown): string | null => {
     return value.toISOString();
   }
 
-  if (typeof value === 'string') {
-    const trimmed = value.trim();
-
-    if (trimmed.length === 0) {
-      return null;
-    }
-
-    const candidates = new Set<string>([trimmed]);
-
-    if (!trimmed.includes('T')) {
-      candidates.add(trimmed.replace(' ', 'T'));
-    }
-
-    if (!/[zZ]$/.test(trimmed) && !/[+-]\d{2}:?\d{2}$/.test(trimmed)) {
-      candidates.add(`${trimmed}Z`);
-    }
-
-    if (/[+-]\d{4}$/.test(trimmed)) {
-      const base = trimmed.slice(0, -4);
-      const hours = trimmed.slice(-4, -2);
-      const minutes = trimmed.slice(-2);
-      candidates.add(`${base}${hours}:${minutes}`);
-    }
-
-    for (const candidate of candidates) {
-      const date = new Date(candidate);
-
-      if (!Number.isNaN(date.getTime())) {
-        return date.toISOString();
-      }
-    }
-
-    return trimmed;
+  if (typeof value !== 'string') {
+    return null;
   }
 
-  return null;
+  const trimmed = value.trim();
+
+  if (trimmed.length === 0) {
+    return null;
+  }
+
+  const baseCandidates = new Set<string>([trimmed]);
+
+  if (!trimmed.includes('T')) {
+    baseCandidates.add(trimmed.replace(' ', 'T'));
+  }
+
+  const candidates = new Set<string>();
+
+  baseCandidates.forEach((candidate) => {
+    candidates.add(candidate);
+
+    if (!/[zZ]$/.test(candidate) && !/[+-]\d{2}:?\d{2}$/.test(candidate) && !/[+-]\d{2}$/.test(candidate)) {
+      candidates.add(`${candidate}Z`);
+    }
+
+    if (/[+-]\d{2}$/.test(candidate)) {
+      candidates.add(`${candidate}:00`);
+    }
+
+    if (/[+-]\d{2}:?\d{2}$/.test(candidate)) {
+      const offsetIndex = candidate.search(/[+-]\d{2}:?\d{2}$/);
+      const prefix = candidate.slice(0, offsetIndex);
+      const offset = candidate.slice(offsetIndex);
+
+      if (!offset.includes(':')) {
+        candidates.add(`${prefix}${offset.slice(0, 3)}:${offset.slice(3)}`);
+      }
+    }
+  });
+
+  for (const candidate of candidates) {
+    const date = new Date(candidate);
+
+    if (!Number.isNaN(date.getTime())) {
+      return date.toISOString();
+    }
+  }
+
+  return trimmed;
 };
 
-const normalizeSubmissionRow = (row: Record<string, unknown>): Record<string, unknown> => {
+const normalizeTimestamp = (value: unknown): string | null => {
+  const normalized = toIsoString(value);
+
+  if (normalized) {
+    return normalized;
+  }
+
+  return typeof value === 'string' && value.trim().length > 0 ? value : null;
+};
+
+const normalizeSubmissionRow = (row: Record<string, unknown>) => {
   const assignments = row.assignments as Record<string, unknown> | undefined;
 
   return {
     ...row,
-    score: scorePreprocessor.parse(row.score ?? (row as { score?: unknown }).score),
-    submitted_at: toIsoString((row as { submitted_at?: unknown }).submitted_at) ??
-      (row as { submitted_at?: unknown }).submitted_at,
-    graded_at: toIsoString((row as { graded_at?: unknown }).graded_at),
-    feedback_updated_at: toIsoString((row as { feedback_updated_at?: unknown }).feedback_updated_at),
+    submitted_at: normalizeTimestamp((row as { submitted_at?: unknown }).submitted_at),
+    graded_at: normalizeTimestamp((row as { graded_at?: unknown }).graded_at),
+    feedback_updated_at: normalizeTimestamp(
+      (row as { feedback_updated_at?: unknown }).feedback_updated_at,
+    ),
     assignments: assignments
       ? {
           ...assignments,
-          due_at: toIsoString(assignments.due_at) ?? assignments.due_at,
+          due_at: normalizeTimestamp(assignments.due_at),
           courses: assignments.courses,
         }
       : assignments,
-  };
+  } satisfies Record<string, unknown>;
 };
 
-const mapSubmissionRowToDetail = (row: SubmissionRow): SubmissionDetail => {
-  const detail = {
+const mapSubmissionRowToDetail = (row: SubmissionRow): SubmissionDetail =>
+  SubmissionDetailSchema.parse({
     id: row.id,
     assignmentId: row.assignment_id,
     assignmentTitle: row.assignments.title,
-    assignmentDueAt: toIsoString(row.assignments.due_at) ?? row.assignments.due_at,
+    assignmentDueAt: normalizeTimestamp(row.assignments.due_at) ?? row.assignments.due_at,
     courseId: row.assignments.course_id,
     courseTitle: row.assignments.courses.title,
     learner: {
@@ -193,15 +222,12 @@ const mapSubmissionRowToDetail = (row: SubmissionRow): SubmissionDetail => {
     score: row.score,
     feedbackText: row.feedback_text,
     requireResubmission: row.status === 'resubmission_required',
-    submittedAt: toIsoString(row.submitted_at) ?? row.submitted_at,
-    gradedAt: row.graded_at ? toIsoString(row.graded_at) ?? row.graded_at : null,
+    submittedAt: normalizeTimestamp(row.submitted_at) ?? row.submitted_at,
+    gradedAt: row.graded_at ? normalizeTimestamp(row.graded_at) : null,
     feedbackUpdatedAt: row.feedback_updated_at
-      ? toIsoString(row.feedback_updated_at) ?? row.feedback_updated_at
+      ? normalizeTimestamp(row.feedback_updated_at)
       : null,
-  } satisfies SubmissionDetail;
-
-  return SubmissionDetailSchema.parse(detail);
-};
+  });
 
 export const getSubmissionDetailForInstructor = async (
   client: SupabaseClient,
@@ -271,3 +297,4 @@ export const updateSubmissionGrade = async (
 
   return mapSubmissionRowToDetail(parsed.data);
 };
+

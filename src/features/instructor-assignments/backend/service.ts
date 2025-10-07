@@ -6,7 +6,6 @@ import {
 } from '@/backend/http/response';
 import type { AppLogger } from '@/backend/hono/context';
 import {
-  ChangeAssignmentStatusRequestSchema,
   CreateAssignmentRequestSchema,
   UpdateAssignmentRequestSchema,
   type AssignmentListResponse,
@@ -21,7 +20,10 @@ import {
   updateInstructorAssignment as updateAssignmentRecord,
 } from '@/features/instructor-assignments/backend/repository';
 import { instructorAssignmentsErrorCodes } from '@/features/instructor-assignments/backend/error';
-import { fetchInstructorProfileByAuthId, fetchInstructorCourseById } from '@/features/instructor/common/repository';
+import {
+  ensureCourseOwnership,
+  ensureInstructorProfile,
+} from '@/features/instructor-assignments/backend/shared';
 
 export type InstructorAssignmentsServiceDeps = {
   client: SupabaseClient;

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+﻿import { z } from 'zod';
 import {
   INSTRUCTOR_DASHBOARD_COVER_DIMENSIONS,
   INSTRUCTOR_DASHBOARD_IMAGE_PROVIDER,
@@ -16,7 +16,11 @@ import {
   type RecentSubmissionItem,
 } from '@/features/instructor-dashboard/lib/dto';
 
-const ASSIGNMENT_SUBMISSIONS_ROUTE_BASE = '/instructor/assignments';
+const buildSubmissionLink = (
+  courseId: string,
+  assignmentId: string,
+  submissionId: string,
+) => `/instructor/courses/${courseId}/assignments/${assignmentId}/submissions/${submissionId}`;
 
 type CourseStatus = z.infer<typeof CourseStatusSchema>;
 type SubmissionStatus = z.infer<typeof SubmissionStatusSchema>;
@@ -84,9 +88,6 @@ const buildCourseCoverUrl = (courseId: string) => {
   return `${INSTRUCTOR_DASHBOARD_IMAGE_PROVIDER}/seed/instructor-course-${encodedId}/${width}/${height}`;
 };
 
-const buildAssignmentLink = (assignmentId: string) =>
-  `${ASSIGNMENT_SUBMISSIONS_ROUTE_BASE}/${assignmentId}/submissions`;
-
 const enrichCourse = (course: InstructorCourse): InstructorDashboardCourseCard => ({
   ...course,
   coverImageUrl: buildCourseCoverUrl(course.id),
@@ -115,7 +116,7 @@ const mapGradingQueueItem = (
   ...item,
   statusLabel: submissionStatusLabels[item.status],
   badgeVariant: submissionStatusVariants[item.status],
-  assignmentLink: buildAssignmentLink(item.assignmentId),
+  assignmentLink: buildSubmissionLink(item.courseId, item.assignmentId, item.submissionId),
 });
 
 const mapRecentSubmissionItem = (
@@ -124,7 +125,7 @@ const mapRecentSubmissionItem = (
   ...item,
   statusLabel: submissionStatusLabels[item.status],
   badgeVariant: submissionStatusVariants[item.status],
-  assignmentLink: buildAssignmentLink(item.assignmentId),
+  assignmentLink: buildSubmissionLink(item.courseId, item.assignmentId, item.submissionId),
 });
 
 export const mapInstructorDashboard = (

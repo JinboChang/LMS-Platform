@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { SupabaseClient } from '@supabase/supabase-js';
+import type { SupabaseClient, PostgrestError } from '@supabase/supabase-js';
 import {
   AssignmentListItemSchema,
   AssignmentListResponseSchema,
@@ -108,6 +108,20 @@ const coerceAssignmentRow = (row: Record<string, unknown>) => ({
   closed_at: normalizeTimestamp((row as { closed_at?: unknown }).closed_at),
 });
 
+const isPostgrestError = (value: unknown): value is PostgrestError =>
+  Boolean(value) &&
+  typeof value === 'object' &&
+  value !== null &&
+  'code' in (value as Record<string, unknown>);
+
+const throwIfTimelineColumnsMissing = (error: PostgrestError) => {
+  if (error.code === '42703') {
+    throw new Error(
+      'Assignments schema missing published_at/closed_at columns. Apply migration 0007_add_assignment_status_timestamps.sql before retrying.',
+    );
+  }
+};
+
 const buildStatusCounts = (assignments: AssignmentTableRow[]) =>
   assignments.reduce(
     (acc, assignment) => {
@@ -135,8 +149,8 @@ const normalizeAssignment = (row: AssignmentTableRow): AssignmentListItem =>
     status: row.status,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
-    publishedAt: row.published_at ?? null,
-    closedAt: row.closed_at ?? null,
+    publishedAt: (row as { published_at?: string | null }).published_at ?? null,
+    closedAt: (row as { closed_at?: string | null }).closed_at ?? null,
     submissionStats: {
       total: 0,
       pending: 0,

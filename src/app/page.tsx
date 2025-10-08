@@ -1,82 +1,166 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Copy, CheckCircle2, Boxes, Database, LogOut, Server } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  CheckCircle2,
+  Compass,
+  GraduationCap,
+  Heart,
+  Layers,
+  LineChart,
+  Rocket,
+  Shield,
+  Sparkles,
+  Users,
+  Workflow,
+} from "lucide-react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser-client";
 import { useCurrentUser } from "@/features/auth/hooks/useCurrentUser";
 
-type SetupCommand = {
-  id: string;
-  label: string;
-  command: string;
+type ShowcaseCard = {
+  title: string;
+  description: string;
+  action: string;
+  href: string;
+  icon: React.ReactNode;
 };
 
-const setupCommands: SetupCommand[] = [
-  { id: "install", label: "의존성 설치", command: "npm install" },
-  { id: "lint", label: "정적 점검", command: "npm run lint" },
-  { id: "dev", label: "로컬 개발 서버", command: "npm run dev" },
+type StepCard = {
+  step: string;
+  heading: string;
+  detail: string;
+};
+
+type BenefitCard = {
+  title: string;
+  body: string;
+  metric?: string;
+};
+
+type StoryCard = {
+  quote: string;
+  name: string;
+  role: string;
+};
+
+const showcaseCards: ShowcaseCard[] = [
+  {
+    title: "학습 관리의 시작, 맞춤형 대시보드",
+    description:
+      "오늘 학습해야 할 콘텐츠, 지난 학습 기록, 남은 과제를 한 화면에서 확인하세요.",
+    action: "대시보드 미리 보기",
+    href: "/dashboard",
+    icon: <Rocket className="h-6 w-6 text-sky-300" />,
+  },
+  {
+    title: "교수자를 위한 강의 제작 스튜디오",
+    description:
+      "강의 개설부터 과제 배포, 채점까지 단계별 안내와 자동화 도구가 함께합니다.",
+    action: "강의 스튜디오 가기",
+    href: "/instructor/courses",
+    icon: <GraduationCap className="h-6 w-6 text-indigo-300" />,
+  },
+  {
+    title: "운영팀을 위한 신고·지원 센터",
+    description:
+      "학습자 문의와 신고가 들어오면 SLA에 맞춰 자동으로 우선순위를 지정해 드립니다.",
+    action: "운영 콘솔 열기",
+    href: "/operator",
+    icon: <Shield className="h-6 w-6 text-emerald-300" />,
+  },
 ];
 
-const envVariables = [
+const steps: StepCard[] = [
   {
-    key: "SUPABASE_URL",
-    description: "Supabase 프로젝트 URL (https://...supabase.co)",
+    step: "01",
+    heading: "회원가입하고 역할 선택하기",
+    detail:
+      "학습자·교수자·운영자 중 나에게 맞는 역할을 선택하면 첫 화면이 달라집니다.",
   },
   {
-    key: "SUPABASE_SERVICE_ROLE_KEY",
-    description:
-      "서버 전용 service-role 키. 절대 클라이언트로 노출하지 마세요.",
-  },
-];
-
-const directorySummary = [
-  {
-    title: "앱 라우터",
-    description: "Next.js App Router 엔트리포인트와 레이아웃 정의",
-    path: "src/app",
+    step: "02",
+    heading: "맞춤형 대시보드 살펴보기",
+    detail:
+      "오늘 해야 할 일, 놓치고 있던 과제, 최근 알림을 한눈에 확인해 보세요.",
   },
   {
-    title: "Hono 엔트리포인트",
-    description: "Next.js Route Handler에서 Hono 앱을 위임",
-    path: "src/app/api/[[...hono]]",
-  },
-  {
-    title: "백엔드 구성요소",
-    description: "Hono 앱, 미들웨어, Supabase 서비스",
-    path: "src/backend",
-  },
-  {
-    title: "기능 모듈",
-    description: "각 기능별 DTO, 라우터, React Query 훅",
-    path: "src/features/[feature]",
+    step: "03",
+    heading: "콘텐츠와 과제로 성장 이어가기",
+    detail:
+      "강의, 라이브 세션, 과제를 통해 학습을 이어가고, 피드백을 즉시 받아보세요.",
   },
 ];
 
-const backendBuildingBlocks = [
+const learnerBenefits: BenefitCard[] = [
   {
-    icon: <Server className="w-4 h-4" />,
-    title: "Hono 앱 구성",
-    description:
-      "errorBoundary → withAppContext → withSupabase → registerExampleRoutes 순서로 미들웨어와 라우터를 조립합니다.",
+    title: "나만을 위한 학습 체크리스트",
+    body: "로그인하면 오늘 해야 할 일과 다음 마감일이 자동으로 정리됩니다.",
   },
   {
-    icon: <Database className="w-4 h-4" />,
-    title: "Supabase 서비스",
-    description:
-      "service-role 키로 생성한 서버 클라이언트를 사용하고, 쿼리 결과는 ts-pattern으로 분기 가능한 결과 객체로 반환합니다.",
+    title: "성장 그래프와 목표 달성률",
+    body: "진행률·점수·피드백을 그래프로 보여 주어 나의 속도를 점검할 수 있어요.",
+    metric: "진행률 달성도 80% 이상 학습자 비율 ↑",
   },
   {
-    icon: <Boxes className="w-4 h-4" />,
-    title: "React Query 연동",
+    title: "실시간 질문과 소통 지원",
+    body: "라이브 힌트, 토론, 신고 기능으로 언제든 도움을 요청할 수 있습니다.",
+  },
+];
+
+const stories: StoryCard[] = [
+  {
+    quote:
+      "오늘 해야 할 일이 대시보드에 정리돼 있어서 마음이 편해졌어요. 과제도 제때 제출하게 됐습니다.",
+    name: "박소연",
+    role: "직장인 학습자",
+  },
+  {
+    quote:
+      "강의 자료와 과제 흐름을 한 번에 만들 수 있어 수업 준비 시간이 많이 줄었어요.",
+    name: "김도윤",
+    role: "교수자",
+  },
+  {
+    quote:
+      "문의와 신고가 들어오면 우선순위가 자동으로 정리돼 운영팀이 더 빠르게 대응하고 있습니다.",
+    name: "정민재",
+    role: "운영 리더",
+  },
+];
+
+const gettingReady: ShowcaseCard[] = [
+  {
+    title: "빠른 온보딩 가이드",
     description:
-      "모든 클라이언트 데이터 패칭은 useExampleQuery와 같은 React Query 훅을 통해 수행하며, DTO 스키마로 응답을 검증합니다.",
+      "처음 방문했다면 온보딩 체크리스트에서 필수 기능을 순서대로 안내받으세요.",
+    action: "온보딩 시작",
+    href: "/onboarding",
+    icon: <Compass className="h-6 w-6 text-slate-200" />,
+  },
+  {
+    title: "커리큘럼 둘러보기",
+    description:
+      "강의, 워크숍, 과제 일정이 어떻게 구성돼 있는지 미리 확인할 수 있어요.",
+    action: "강의 목록 보기",
+    href: "/courses",
+    icon: <BookOpen className="h-6 w-6 text-slate-200" />,
+  },
+  {
+    title: "학습 여정 카드 소개",
+    description:
+      "진행률, 히스토리, 추천 콘텐츠 등 학습 여정을 추적하는 카드를 살펴보세요.",
+    action: "대시보드 살펴보기",
+    href: "/dashboard",
+    icon: <LineChart className="h-6 w-6 text-slate-200" />,
   },
 ];
 
 export default function Home() {
-  const [copiedCommand, setCopiedCommand] = useState<string | null>(null);
   const { user, isAuthenticated, isLoading, refresh } = useCurrentUser();
   const router = useRouter();
 
@@ -87,222 +171,421 @@ export default function Home() {
     router.replace("/");
   }, [refresh, router]);
 
-  const authActions = useMemo(() => {
-    if (isLoading) {
-      return (
-        <span className="text-sm text-slate-300">세션 확인 중...</span>
-      );
-    }
-
-    if (isAuthenticated && user) {
-      return (
-        <div className="flex items-center gap-3 text-sm text-slate-200">
-          <span className="truncate">{user.email ?? "알 수 없는 사용자"}</span>
-          <div className="flex items-center gap-2">
-            <Link
-              href="/dashboard"
-              className="rounded-md border border-slate-600 px-3 py-1 transition hover:border-slate-400 hover:bg-slate-800"
-            >
-              대시보드
-            </Link>
-            <button
-              type="button"
-              onClick={handleSignOut}
-              className="flex items-center gap-1 rounded-md bg-slate-100 px-3 py-1 text-slate-900 transition hover:bg-white"
-            >
-              <LogOut className="h-4 w-4" />
-              로그아웃
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="flex items-center gap-3 text-sm">
-        <Link
-          href="/login"
-          className="rounded-md border border-slate-600 px-3 py-1 text-slate-200 transition hover:border-slate-400 hover:bg-slate-800"
-        >
-          로그인
-        </Link>
-        <Link
-          href="/signup"
-          className="rounded-md bg-slate-100 px-3 py-1 text-slate-900 transition hover:bg-white"
-        >
-          회원가입
-        </Link>
-      </div>
-    );
-  }, [handleSignOut, isAuthenticated, isLoading, user]);
-
-  const handleCopy = (command: string) => {
-    navigator.clipboard.writeText(command);
-    setCopiedCommand(command);
-    window.setTimeout(() => setCopiedCommand(null), 2000);
-  };
-
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-white">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-6 py-16">
-        <div className="flex items-center justify-between rounded-xl border border-slate-700 bg-slate-900/80 px-6 py-4">
-          <div className="text-sm font-medium text-slate-300">
-            SuperNext — 구조적인 Next.js + Supabase 템플릿
-          </div>
-          {authActions}
-        </div>
-        <header className="space-y-4">
-          <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
-            SuperNext 프로젝트 설정 & 구조 안내서
-          </h1>
-          <p className="max-w-3xl text-base text-slate-300 md:text-lg">
-            React Query / Hono.js / Supabase를 사용합니다.
-            <br /> 모든 컴포넌트는 Client Component로 작성합니다.
-          </p>
-        </header>
-
-        <section className="grid gap-8 md:grid-cols-2">
-          <SetupChecklist copiedCommand={copiedCommand} onCopy={handleCopy} />
-          <EnvironmentGuide />
-        </section>
-
-        <section className="grid gap-8 md:grid-cols-2">
-          <DirectoryOverview />
-          <BackendOverview />
-        </section>
-
-        <footer className="rounded-xl border border-slate-700 bg-slate-900/60 p-6">
-          <h2 className="text-lg font-semibold text-slate-100">
-            Supabase Migration
-          </h2>
-          <p className="mt-2 text-sm text-slate-300">
-            `supabase/migrations/20250227000100_create_example_table.sql` 파일을
-            Supabase 대시보드 SQL Editor에 업로드하여 `public.example` 테이블과
-            샘플 데이터를 생성하세요. 서비스 역할 키는 서버 환경 변수에만
-            저장하고, React Query 훅에서는 공개 API만 호출합니다.
-          </p>
-        </footer>
+    <main className="relative min-h-screen overflow-hidden bg-slate-950 text-slate-100">
+      <AmbientBackground />
+      <div className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 pb-24 pt-10 sm:px-12 lg:px-16">
+        <Header
+          isAuthenticated={isAuthenticated}
+          isLoading={isLoading}
+          email={user?.email ?? ""}
+          onSignOut={handleSignOut}
+        />
+        <Hero isAuthenticated={isAuthenticated} />
+        <HighlightDeck />
+        <StepSection />
+        <LearnerBenefitSection />
+        <StorySection />
+        <PreparationSection />
+        <CtaSection />
       </div>
     </main>
   );
 }
 
-function SetupChecklist({
-  copiedCommand,
-  onCopy,
+function Header({
+  isAuthenticated,
+  isLoading,
+  email,
+  onSignOut,
 }: {
-  copiedCommand: string | null;
-  onCopy: (command: string) => void;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  email: string;
+  onSignOut: () => void;
 }) {
   return (
-    <div className="space-y-4 rounded-xl border border-slate-700 bg-slate-900/60 p-6">
-      <h2 className="text-lg font-semibold text-slate-100">
-        SuperNext 설치 체크리스트
-      </h2>
-      <ul className="space-y-3">
-        {setupCommands.map((item) => (
-          <li key={item.id} className="flex items-start justify-between gap-3">
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="mt-1 h-5 w-5 text-emerald-400" />
-              <div>
-                <p className="font-medium text-slate-100">{item.label}</p>
-                <code className="text-sm text-slate-300">{item.command}</code>
-              </div>
-            </div>
+    <header className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+      <Link href="/" className="flex items-center gap-3">
+        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 via-sky-500 to-emerald-400 text-xl font-semibold text-slate-950 shadow-lg shadow-sky-500/30">
+          LMS
+        </span>
+        <div>
+          <p className="text-lg font-semibold text-slate-100">
+            여러분의 학습 플랫폼
+          </p>
+          <p className="text-xs uppercase tracking-[0.3em] text-slate-400">
+            learn · connect · grow
+          </p>
+        </div>
+      </Link>
+      <div className="flex items-center gap-3 text-sm">
+        <Link
+          href="/courses"
+          className="rounded-full border border-slate-700 px-3 py-1 text-slate-200 transition hover:border-slate-500 hover:bg-slate-900/70"
+        >
+          강의 둘러보기
+        </Link>
+        <Link
+          href="/example"
+          className="rounded-full border border-slate-700 px-3 py-1 text-slate-200 transition hover:border-slate-500 hover:bg-slate-900/70"
+        >
+          기능 미리 보기
+        </Link>
+        {isLoading ? (
+          <span className="rounded-full border border-slate-700 px-3 py-1 text-slate-400">
+            로그인 상태 확인 중...
+          </span>
+        ) : isAuthenticated ? (
+          <>
+            <span className="rounded-full border border-slate-700 px-3 py-1 text-slate-200">
+              {email}
+            </span>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-1 rounded-full border border-slate-600 px-3 py-1 text-slate-100 transition hover:border-slate-400 hover:bg-slate-900/60"
+            >
+              나의 대시보드
+              <ArrowRight className="h-4 w-4" />
+            </Link>
             <button
               type="button"
-              onClick={() => onCopy(item.command)}
-              className="flex items-center gap-1 rounded-md border border-slate-700 px-2 py-1 text-xs text-slate-200 transition hover:border-slate-500 hover:bg-slate-800"
+              onClick={onSignOut}
+              className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-slate-900 transition hover:bg-slate-50"
             >
-              <Copy className="h-3.5 w-3.5" />
-              {copiedCommand === item.command ? "복사됨" : "복사"}
+              로그아웃
             </button>
-          </li>
-        ))}
-      </ul>
-      <p className="text-xs text-slate-400">
-        개발 서버는 React Query Provider가 설정된 `src/app/providers.tsx`를
-        통과하여 실행됩니다.
-      </p>
-    </div>
+          </>
+        ) : (
+          <>
+            <Link
+              href="/login"
+              className="rounded-full border border-slate-700 px-3 py-1 text-slate-200 transition hover:border-slate-500 hover:bg-slate-900/70"
+            >
+              로그인
+            </Link>
+            <Link
+              href="/signup"
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 via-sky-500 to-emerald-400 px-4 py-1 font-medium text-slate-950 shadow-lg shadow-sky-400/40 transition hover:from-indigo-400 hover:via-sky-400 hover:to-emerald-300"
+            >
+              무료로 시작하기
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </>
+        )}
+      </div>
+    </header>
   );
 }
 
-function EnvironmentGuide() {
+function Hero({ isAuthenticated }: { isAuthenticated: boolean }) {
   return (
-    <div className="space-y-4 rounded-xl border border-slate-700 bg-slate-900/60 p-6">
-      <h2 className="text-lg font-semibold text-slate-100">환경 변수</h2>
-      <p className="text-sm text-slate-300">
-        `.env.local` 파일에 아래 값을 추가하고, service-role 키는 서버 빌드
-        환경에서만 주입하세요.
-      </p>
-      <ul className="space-y-3">
-        {envVariables.map((item) => (
-          <li
-            key={item.key}
-            className="rounded-lg border border-slate-800 bg-slate-950/50 p-3"
+    <section className="mt-16 grid gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="space-y-8">
+        <span className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/70 px-4 py-1 text-xs uppercase tracking-[0.3em] text-slate-300">
+          <Sparkles className="h-3.5 w-3.5 text-amber-400" />
+          당신의 학습이 한 곳에서 시작되는 곳
+        </span>
+        <div className="space-y-6">
+          <h1 className="text-4xl font-semibold leading-tight tracking-tight text-slate-100 sm:text-5xl lg:text-[3.3rem]">
+            오늘 해야 할 일과
+            <span className="ml-2 inline bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-300 bg-clip-text text-transparent">
+              나만의 성장 경로
+            </span>
+            를 한 번에 보세요.
+          </h1>
+          <p className="text-lg text-slate-300">
+            이 플랫폼은 학습자에게는 명확한 체크리스트를, 교수자에게는 쉽고 빠른 강의 구성 도구를,
+            운영팀에게는 안정적인 지원 시스템을 제공합니다.
+          </p>
+        </div>
+        <div className="flex flex-col gap-4 sm:flex-row">
+          <Link
+            href={isAuthenticated ? "/dashboard" : "/signup"}
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-indigo-500 via-blue-500 to-cyan-400 px-6 py-3 text-base font-medium text-slate-950 shadow-xl shadow-blue-500/30 transition hover:from-indigo-400 hover:via-blue-400 hover:to-cyan-300"
           >
-            <p className="font-medium text-slate-100">{item.key}</p>
-            <p className="text-xs text-slate-300">{item.description}</p>
-          </li>
-        ))}
-      </ul>
-      <p className="text-xs text-slate-400">
-        환경 스키마는 `src/backend/config/index.ts`에서 zod로 검증되며, 누락 시
-        명확한 오류를 발생시킵니다.
-      </p>
-    </div>
+            {isAuthenticated ? "대시보드 열기" : "무료 체험 시작"}
+            <ArrowRight className="h-5 w-5" />
+          </Link>
+          <Link
+            href="/courses"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-700 px-6 py-3 text-base text-slate-200 transition hover:border-slate-500 hover:bg-slate-900/70"
+          >
+            강의 목록 보기
+          </Link>
+        </div>
+        <div className="flex flex-col gap-4 text-sm text-slate-400 sm:flex-row">
+          <BadgeLine icon={CheckCircle2} label="오늘 할 일과 마감일을 자동으로 정리" />
+          <BadgeLine icon={CheckCircle2} label="참여도와 피드백을 시각화한 성장 지도" />
+          <BadgeLine icon={CheckCircle2} label="문의·신고에 빠르게 대응하는 운영 팀" />
+        </div>
+      </div>
+      <div className="relative rounded-3xl border border-slate-800 bg-slate-900/60 p-8 shadow-[0_20px_80px_-40px_rgba(56,189,248,0.6)]">
+        <div className="absolute -top-16 right-6 h-36 w-36 rounded-full bg-indigo-500/25 blur-3xl" />
+        <div className="absolute bottom-6 left-12 h-32 w-32 rounded-full bg-emerald-400/20 blur-3xl" />
+        <div className="relative space-y-6">
+          <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-6">
+            <p className="text-xs uppercase tracking-[0.25em] text-slate-400">
+              오늘의 추천
+            </p>
+            <p className="mt-3 text-lg font-semibold text-slate-100">
+              “이번 주 과제 마감까지 3일 남았어요. 과제 작성 팁과 예시를 확인해 보세요.”
+            </p>
+            <p className="mt-2 text-sm text-slate-300">
+              추천 콘텐츠, 진행 중인 강의, 받은 피드백이 한 화면에서 연결됩니다.
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <MiniCard
+              icon={<Workflow className="h-5 w-5 text-sky-300" />}
+              title="오늘의 학습"
+              description="강의 보기 → 노트 정리 → 퀴즈 참여 순서대로 안내합니다."
+            />
+            <MiniCard
+              icon={<Users className="h-5 w-5 text-indigo-300" />}
+              title="실시간 도움"
+              description="질문, 토론, 신고 기능으로 바로 도움을 요청하세요."
+            />
+            <MiniCard
+              icon={<Heart className="h-5 w-5 text-rose-300" />}
+              title="맞춤 피드백"
+              description="강사 피드백과 동료 피드백이 타임라인으로 모입니다."
+            />
+            <MiniCard
+              icon={<Users className="h-5 w-5 text-emerald-300" />}
+              title="목표 달성률"
+              description="중단 위험 학습자에게는 리마인더와 대체 학습을 제안합니다."
+            />
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 
-function DirectoryOverview() {
+function HighlightDeck() {
   return (
-    <div className="space-y-4 rounded-xl border border-slate-700 bg-slate-900/60 p-6">
-      <h2 className="text-lg font-semibold text-slate-100">
-        SuperNext 주요 디렉터리
-      </h2>
-      <ul className="space-y-3">
-        {directorySummary.map((item) => (
-          <li
-            key={item.path}
-            className="rounded-lg border border-slate-800 bg-slate-950/50 p-3"
+    <section className="mt-24 space-y-8">
+      <h2 className="text-3xl font-semibold text-slate-100">어떤 경험을 만나게 되나요?</h2>
+      <div className="grid gap-6 md:grid-cols-3">
+        {showcaseCards.map((card) => (
+          <Link
+            key={card.title}
+            href={card.href}
+            className="group flex h-full flex-col justify-between rounded-3xl border border-slate-800 bg-slate-900/60 p-6 transition hover:border-indigo-400/60 hover:shadow-xl hover:shadow-indigo-500/20"
           >
-            <p className="text-sm font-semibold text-slate-100">{item.path}</p>
-            <p className="text-xs text-slate-300">{item.description}</p>
-            <p className="text-xs text-slate-400">{item.title}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function BackendOverview() {
-  return (
-    <div className="space-y-4 rounded-xl border border-slate-700 bg-slate-900/60 p-6">
-      <h2 className="text-lg font-semibold text-slate-100">
-        SuperNext 백엔드 빌딩 블록
-      </h2>
-      <ul className="space-y-3">
-        {backendBuildingBlocks.map((item, index) => (
-          <li
-            key={item.title + index}
-            className="flex items-start gap-3 rounded-lg border border-slate-800 bg-slate-950/50 p-3"
-          >
-            <div className="mt-0.5 text-indigo-300">{item.icon}</div>
-            <div>
-              <p className="font-medium text-slate-100">{item.title}</p>
-              <p className="text-xs text-slate-300">{item.description}</p>
+            <div className="flex items-center gap-3 text-slate-200">
+              {card.icon}
+              <h3 className="text-lg font-semibold">{card.title}</h3>
             </div>
-          </li>
+            <p className="mt-4 flex-1 text-sm text-slate-400">{card.description}</p>
+            <span className="mt-6 inline-flex items-center gap-2 text-xs font-medium text-indigo-300">
+              {card.action}
+              <ArrowRight className="h-4 w-4" />
+            </span>
+          </Link>
         ))}
-      </ul>
-      <p className="text-xs text-slate-400">
-        예시 라우터는 `src/features/example/backend/route.ts`, 서비스 로직은
-        `src/features/example/backend/service.ts`, 공통 스키마는
-        `src/features/example/backend/schema.ts`에서 관리하며 Supabase
-        `public.example` 테이블과 통신합니다.
-      </p>
+      </div>
+    </section>
+  );
+}
+
+function StepSection() {
+  return (
+    <section className="mt-24 rounded-3xl border border-slate-800 bg-slate-900/60 px-6 py-10 sm:px-10">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm uppercase tracking-[0.25em] text-slate-400">시작은 이렇게</p>
+          <h2 className="mt-3 text-3xl font-semibold text-slate-100">
+            처음 방문한 학습자를 위한 3단계 가이드
+          </h2>
+        </div>
+        <Link
+          href="/onboarding"
+          className="inline-flex items-center gap-2 rounded-full border border-slate-600 px-4 py-2 text-sm text-slate-200 transition hover:border-slate-400 hover:bg-slate-900/70"
+        >
+          온보딩 체크리스트 보기
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+      </div>
+      <div className="mt-10 grid gap-6 md:grid-cols-3">
+        {steps.map((step) => (
+          <div
+            key={step.step}
+            className="rounded-2xl border border-slate-800 bg-slate-950/60 p-6 shadow-[0_20px_60px_-40px_rgba(56,189,248,0.4)]"
+          >
+            <span className="text-xs font-semibold text-sky-300">STEP {step.step}</span>
+            <h3 className="mt-3 text-lg font-semibold text-slate-100">{step.heading}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-slate-300">{step.detail}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function LearnerBenefitSection() {
+  return (
+    <section className="mt-24 space-y-6">
+      <h2 className="text-3xl font-semibold text-slate-100">학습자가 좋아하는 이유</h2>
+      <div className="grid gap-6 md:grid-cols-3">
+        {learnerBenefits.map((benefit) => (
+          <div
+            key={benefit.title}
+            className="rounded-2xl border border-slate-800 bg-slate-900/60 p-6"
+          >
+            <h3 className="text-lg font-semibold text-slate-100">{benefit.title}</h3>
+            <p className="mt-2 text-sm text-slate-300">{benefit.body}</p>
+            {benefit.metric ? (
+              <span className="mt-4 inline-flex items-center gap-2 text-xs text-emerald-300">
+                <Heart className="h-4 w-4" />
+                {benefit.metric}
+              </span>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function StorySection() {
+  return (
+    <section className="mt-24 space-y-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <h2 className="text-3xl font-semibold text-slate-100">
+          플랫폼을 사용해 본 사람들의 이야기
+        </h2>
+      </div>
+      <div className="grid gap-6 md:grid-cols-3">
+        {stories.map((story) => (
+          <figure
+            key={story.name}
+            className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6"
+          >
+            <blockquote className="text-lg leading-relaxed text-slate-200">
+              “{story.quote}”
+            </blockquote>
+            <figcaption className="mt-4 text-sm text-slate-400">
+              <span className="font-medium text-slate-200">{story.name}</span>
+              <span className="mx-1 text-slate-600">·</span>
+              {story.role}
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function PreparationSection() {
+  return (
+    <section className="mt-24 space-y-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm uppercase tracking-[0.25em] text-slate-400">지금 바로</p>
+          <h2 className="text-3xl font-semibold text-slate-100">
+            필요한 화면으로 바로 이동하세요
+          </h2>
+        </div>
+      </div>
+      <div className="grid gap-6 md:grid-cols-3">
+        {gettingReady.map((card) => (
+          <Link
+            key={card.title}
+            href={card.href}
+            className="group flex h-full flex-col justify-between rounded-3xl border border-slate-800 bg-slate-900/60 p-6 transition hover:border-indigo-400/60 hover:shadow-xl hover:shadow-indigo-500/20"
+          >
+            <div className="flex items-center gap-3 text-slate-200">
+              {card.icon}
+              <h3 className="text-lg font-semibold">{card.title}</h3>
+            </div>
+            <p className="mt-4 flex-1 text-sm text-slate-300">{card.description}</p>
+            <span className="mt-6 inline-flex items-center gap-2 text-xs font-medium text-indigo-300">
+              {card.action}
+              <ArrowRight className="h-4 w-4" />
+            </span>
+          </Link>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CtaSection() {
+  return (
+    <section className="mt-24 rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 p-10 shadow-[0_0_120px_-40px_rgba(56,189,248,0.4)]">
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-sm uppercase tracking-[0.25em] text-slate-400">READY TO LEARN</p>
+          <h2 className="mt-3 text-3xl font-semibold text-slate-100">
+            여러분의 학습 여정, 지금 여기에서 시작하세요
+          </h2>
+          <p className="mt-2 text-sm text-slate-400">
+            필요한 콘텐츠를 빠르게 찾고, 과제와 피드백을 놓치지 않고, 운영팀의 지원까지 받을 수 있는 공간입니다.
+          </p>
+        </div>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <Link
+            href="/signup"
+            className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-br from-indigo-500 via-sky-500 to-emerald-400 px-6 py-3 font-medium text-slate-950 shadow-lg shadow-emerald-400/40 transition hover:from-indigo-400 hover:via-sky-400 hover:to-emerald-300"
+          >
+            지금 가입하고 둘러보기
+            <ArrowRight className="h-5 w-5" />
+          </Link>
+          <Link
+            href="/support"
+            className="inline-flex items-center gap-2 rounded-2xl border border-slate-600 px-6 py-3 text-slate-200 transition hover:border-slate-400 hover:bg-slate-900/70"
+          >
+            운영팀에게 문의하기
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BadgeLine({
+  icon,
+  label,
+}: {
+  icon: LucideIcon;
+  label: string;
+}) {
+  const Icon = icon;
+  return (
+    <div className="inline-flex items-center gap-2 rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300">
+      <Icon className="h-3.5 w-3.5 text-sky-300" />
+      {label}
+    </div>
+  );
+}
+
+function MiniCard({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
+      {icon}
+      <p className="mt-2 text-sm font-semibold text-slate-100">{title}</p>
+      <p className="text-xs text-slate-400">{description}</p>
+    </div>
+  );
+}
+
+function AmbientBackground() {
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div className="absolute -top-48 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-gradient-to-br from-indigo-500/30 via-sky-500/20 to-transparent blur-3xl" />
+      <div className="absolute bottom-10 left-1/3 h-80 w-80 -translate-x-1/2 rounded-full bg-emerald-400/20 blur-3xl" />
+      <div className="absolute bottom-24 right-1/5 h-80 w-80 rounded-full bg-purple-500/20 blur-3xl" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(99,102,241,0.2),_transparent_55%)]" />
     </div>
   );
 }

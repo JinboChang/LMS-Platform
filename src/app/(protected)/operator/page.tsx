@@ -15,16 +15,16 @@ const buildHeroImage = () =>
 
 const highlights = [
   {
-    title: "신고 대응 자동화",
-    description: "조치 기록과 상태 전환을 한 화면에서 처리할 수 있습니다.",
+    title: "Automated routing",
+    description: "Requests are triaged by priority and SLA so the right person sees them first.",
   },
   {
-    title: "메타데이터 동기화",
-    description: "카테고리와 난이도 변경이 즉시 코스 관리 화면에 반영됩니다.",
+    title: "Metadata in sync",
+    description: "Category and status changes instantly flow into course and assignment views.",
   },
   {
-    title: "실시간 감사 로그",
-    description: "조치 내역을 투명하게 남겨 후속 조치에 활용하세요.",
+    title: "Audit-ready log",
+    description: "Track every action and response so policies stay clear and enforceable.",
   },
 ];
 
@@ -37,19 +37,19 @@ const OperatorPage = ({ params }: OperatorPageProps) => {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
           <div className="flex-1 space-y-3">
             <div className="flex items-center gap-2 text-muted-foreground">
-              <ShieldCheck className="h-5 w-5" /> 운영 대시보드
+              <ShieldCheck className="h-5 w-5" /> Operations dashboard
             </div>
             <h1 className="text-3xl font-semibold text-foreground">
-              신고 대응과 메타데이터 관리를 한 곳에서
+              Manage alerts, escalations, and metadata in one place
             </h1>
             <p className="text-sm text-muted-foreground">
-              신고 현황, 처리 이력, 카테고리와 난이도를 통합 관리하여 학습자 경험을 안정적으로 유지하세요.
+              Keep service reliable by grouping alerts, responses, and categories with a clear workflow for your team.
             </p>
           </div>
           <div className="relative h-40 w-full overflow-hidden rounded-xl border lg:w-80">
             <Image
               src={buildHeroImage()}
-              alt="운영 대시보드 히어로 이미지"
+              alt="Operations dashboard illustration"
               fill
               sizes="(max-width: 768px) 100vw, 320px"
               className="object-cover"
@@ -86,4 +86,3 @@ const OperatorPage = ({ params }: OperatorPageProps) => {
 };
 
 export default OperatorPage;
-

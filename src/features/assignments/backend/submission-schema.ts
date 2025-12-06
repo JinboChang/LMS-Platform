@@ -17,7 +17,7 @@ export const enrollmentStatuses = ["active", "cancelled"] as const satisfies rea
 const optionalUrlSchema = z
   .string()
   .trim()
-  .url({ message: "유효한 URL을 입력해주세요." })
+  .url({ message: "Please enter a valid URL." })
   .optional()
   .or(
     z
@@ -29,11 +29,11 @@ export const AssignmentSubmissionRequestSchema = z
   .object({
     authUserId: z
       .string()
-      .uuid({ message: "유효한 인증 사용자 ID가 아닙니다." }),
+      .uuid({ message: "Auth user ID must be a valid UUID." }),
     submissionText: z
       .string()
       .trim()
-      .min(1, { message: "제출 본문을 입력해주세요." }),
+      .min(1, { message: "Submission text is required." }),
     submissionLink: optionalUrlSchema,
   })
   .transform((value) => ({

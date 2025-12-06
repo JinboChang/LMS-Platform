@@ -46,8 +46,8 @@ export const CourseList = ({
   if (!isLoading && courses.length === 0) {
     return (
       <div className="flex min-h-[200px] flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-10 text-center">
-        <p className="text-sm font-medium text-slate-600">조건에 맞는 코스가 없습니다.</p>
-        <p className="text-xs text-slate-500">검색어나 필터를 조정해 다시 시도해 보세요.</p>
+        <p className="text-sm font-medium text-slate-600">No courses match your filters.</p>
+        <p className="text-xs text-slate-500">Try changing the search keywords or filters.</p>
       </div>
     );
   }

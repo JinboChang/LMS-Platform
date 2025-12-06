@@ -29,7 +29,7 @@ const fetchCourseList = async (params: CourseListQueryDto) => {
   } catch (error) {
     const message = extractApiErrorMessage(
       error,
-      '코스 목록 조회에 실패했습니다.',
+      'Failed to fetch courses.',
     );
     throw new Error(message);
   }
@@ -67,7 +67,7 @@ export const useCourseSearch = ({
     queryKey: courseQueryKeys.list(parsedQuery ?? 'invalid'),
     queryFn: () => {
       if (!parsedQuery) {
-        throw new Error('검색 조건이 올바르지 않습니다.');
+        throw new Error('Search parameters are invalid.');
       }
 
       return fetchCourseList(parsedQuery);

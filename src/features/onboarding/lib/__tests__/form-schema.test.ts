@@ -14,7 +14,7 @@ describe("OnboardingFormSchema", () => {
   it("requires role selection", () => {
     const result = OnboardingFormSchema.safeParse({
       email: "student@example.com",
-      name: "홍길동",
+      name: "John Doe",
       phoneNumber: "+821012345678",
       role: undefined,
       acceptedTerms: true,
@@ -26,7 +26,7 @@ describe("OnboardingFormSchema", () => {
   it("produces request payload when values are valid", () => {
     const parsed = OnboardingFormSchema.parse({
       email: "student@example.com",
-      name: "홍길동",
+      name: "John Doe",
       phoneNumber: "+821012345678",
       role: "learner",
       acceptedTerms: true,

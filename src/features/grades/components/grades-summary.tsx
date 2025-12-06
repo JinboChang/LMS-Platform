@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { BookOpen, Clock3, Hourglass, TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +7,7 @@ import { formatDateTime, formatPercentage } from "@/features/grades/lib/calculat
 
 const METRIC_ICON_SIZE = 20;
 
-const formatCount = (value: number) => `${value.toLocaleString()}개`;
+const formatCount = (value: number) => value.toLocaleString();
 
 type GradesSummaryProps = {
   overview: GradesOverviewResponse;
@@ -27,7 +27,7 @@ export const GradesSummary = ({ overview }: GradesSummaryProps) => {
     <section className="grid gap-4 md:grid-cols-4">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">수강 중 강좌</CardTitle>
+          <CardTitle className="text-sm font-medium">Active courses</CardTitle>
           <BookOpen className="text-primary" size={METRIC_ICON_SIZE} />
         </CardHeader>
         <CardContent>
@@ -36,7 +36,7 @@ export const GradesSummary = ({ overview }: GradesSummaryProps) => {
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">전체 평균 점수</CardTitle>
+          <CardTitle className="text-sm font-medium">Average score</CardTitle>
           <TrendingUp className="text-primary" size={METRIC_ICON_SIZE} />
         </CardHeader>
         <CardContent>
@@ -45,7 +45,7 @@ export const GradesSummary = ({ overview }: GradesSummaryProps) => {
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">채점 대기 과제</CardTitle>
+          <CardTitle className="text-sm font-medium">Awaiting grading</CardTitle>
           <Hourglass className="text-primary" size={METRIC_ICON_SIZE} />
         </CardHeader>
         <CardContent>
@@ -54,7 +54,7 @@ export const GradesSummary = ({ overview }: GradesSummaryProps) => {
       </Card>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">지연 제출</CardTitle>
+          <CardTitle className="text-sm font-medium">Late submissions</CardTitle>
           <Clock3 className="text-primary" size={METRIC_ICON_SIZE} />
         </CardHeader>
         <CardContent>
@@ -63,7 +63,7 @@ export const GradesSummary = ({ overview }: GradesSummaryProps) => {
       </Card>
       <Card className="md:col-span-4">
         <CardHeader>
-          <CardTitle className="text-base font-semibold">최근 피드백</CardTitle>
+          <CardTitle className="text-base font-semibold">Latest feedback</CardTitle>
         </CardHeader>
         <CardContent>
           {latestFeedback ? (
@@ -73,17 +73,17 @@ export const GradesSummary = ({ overview }: GradesSummaryProps) => {
                   {latestFeedback.courseTitle}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  {formatDateTime(latestFeedback.feedbackUpdatedAt)} 기준
+                  As of {formatDateTime(latestFeedback.feedbackUpdatedAt)}
                 </span>
               </div>
               <p className="text-lg font-semibold">{latestFeedback.assignmentTitle}</p>
               <p className="text-sm leading-relaxed text-muted-foreground">
-                {latestFeedback.feedbackText ?? "피드백 내용이 없습니다."}
+                {latestFeedback.feedbackText ?? "No feedback provided."}
               </p>
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">
-              아직 도착한 피드백이 없습니다. 과제 제출 후 채점이 완료되면 이곳에서 확인할 수 있습니다.
+              No feedback has arrived yet. Once grading is completed, the latest feedback will appear here.
             </p>
           )}
         </CardContent>

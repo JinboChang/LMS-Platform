@@ -73,12 +73,12 @@ export const CourseListQuerySchema = z
       .preprocess(sanitizeSearch, z.string().min(2).max(100))
       .optional(),
     categoryId: z
-      .preprocess(sanitizeUuid, z.string().uuid('?좏슚??移댄뀒怨좊━ ID媛 ?꾩슂?⑸땲??'))
+      .preprocess(sanitizeUuid, z.string().uuid('Invalid category ID.'))
       .optional(),
     difficultyId: z
       .preprocess(
         sanitizeUuid,
-        z.string().uuid('?좏슚???쒖씠??ID媛 ?꾩슂?⑸땲??'),
+        z.string().uuid('Invalid difficulty ID.'),
       )
       .optional(),
     sort: z

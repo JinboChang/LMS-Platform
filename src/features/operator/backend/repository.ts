@@ -368,7 +368,7 @@ export const listReports = async (
       return failure(
         500,
         operatorErrorCodes.validationError,
-        "신고 레코드 형식이 올바르지 않습니다.",
+        "Report record validation failed.",
         parsed.error.format(),
       );
     }
@@ -388,7 +388,7 @@ export const listReports = async (
     return failure(
       500,
       operatorErrorCodes.repositoryError,
-      "신고 조치 이력을 조회하지 못했습니다.",
+      "Failed to fetch report actions.",
       actionsError,
     );
   }
@@ -401,7 +401,7 @@ export const listReports = async (
     return failure(
       500,
       operatorErrorCodes.repositoryError,
-      "신고 작성자 정보를 조회하지 못했습니다.",
+      "Failed to fetch reporter information.",
       reporterError,
     );
   }
@@ -414,7 +414,7 @@ export const listReports = async (
     return failure(
       500,
       operatorErrorCodes.repositoryError,
-      "신고 조치자 정보를 조회하지 못했습니다.",
+      "Failed to fetch action actor information.",
       actionUserError,
     );
   }
@@ -436,7 +436,7 @@ export const listReports = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "신고 목록 응답이 유효하지 않습니다.",
+      "Report list response is invalid.",
       parsedResponse.error.format(),
     );
   }
@@ -481,7 +481,7 @@ export const getReportDetail = async (
     return failure(
       404,
       operatorErrorCodes.reportNotFound,
-      "신고가 존재하지 않습니다.",
+      "Report not found.",
     );
   }
 
@@ -493,7 +493,7 @@ export const getReportDetail = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "신고 상세 레코드가 유효하지 않습니다.",
+      "Report detail record is invalid.",
       parsedRow.error.format(),
     );
   }
@@ -506,7 +506,7 @@ export const getReportDetail = async (
     return failure(
       500,
       operatorErrorCodes.repositoryError,
-      "신고 조치 이력을 조회하지 못했습니다.",
+      "Failed to fetch report actions.",
       actionsError,
     );
   }
@@ -519,7 +519,7 @@ export const getReportDetail = async (
     return failure(
       500,
       operatorErrorCodes.repositoryError,
-      "신고 작성자 정보를 조회하지 못했습니다.",
+      "Failed to fetch reporter information.",
       reporterError,
     );
   }
@@ -535,7 +535,7 @@ export const getReportDetail = async (
     return failure(
       500,
       operatorErrorCodes.repositoryError,
-      "신고 조치자 정보를 조회하지 못했습니다.",
+      "Failed to fetch action actor information.",
       actionUserError,
     );
   }
@@ -551,7 +551,7 @@ export const getReportDetail = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "신고 상세 응답을 구성하지 못했습니다.",
+      "Report detail response is invalid.",
     );
   }
 
@@ -599,7 +599,7 @@ export const updateReportStatus = async (
     return failure(
       404,
       operatorErrorCodes.reportNotFound,
-      "신고가 존재하지 않습니다.",
+      "Report not found.",
     );
   }
 
@@ -611,7 +611,7 @@ export const updateReportStatus = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "신고 상태 업데이트 결과가 유효하지 않습니다.",
+      "Report status update response is invalid.",
       parsedRow.error.format(),
     );
   }
@@ -669,7 +669,7 @@ export const insertReportAction = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "신고 조치 레코드가 유효하지 않습니다.",
+      "Report action record is invalid.",
       parsedRow.error.format(),
     );
   }
@@ -684,7 +684,7 @@ export const insertReportAction = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "조치자 정보를 확인하지 못했습니다.",
+      "Failed to resolve action actor.",
     );
   }
 
@@ -703,7 +703,7 @@ export const insertReportAction = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "신고 조치 응답이 유효하지 않습니다.",
+      "Report action response is invalid.",
       builtAction.error.format(),
     );
   }
@@ -723,7 +723,7 @@ export const listCategories = async (
     return failure(
       500,
       operatorErrorCodes.repositoryError,
-      "카테고리 목록을 조회하지 못했습니다.",
+      "Failed to fetch categories.",
       error,
     );
   }
@@ -771,7 +771,7 @@ export const findCategoryByName = async (
     return failure(
       500,
       operatorErrorCodes.repositoryError,
-      "카테고리를 조회하지 못했습니다.",
+      "Failed to fetch category.",
       error,
     );
   }
@@ -788,7 +788,7 @@ export const findCategoryByName = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "카테고리 레코드가 유효하지 않습니다.",
+      "Category record is invalid.",
       parsed.error.format(),
     );
   }
@@ -805,7 +805,7 @@ export const findCategoryByName = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "카테고리 응답이 유효하지 않습니다.",
+      "Category response is invalid.",
       normalized.error.format(),
     );
   }
@@ -830,7 +830,7 @@ export const createCategory = async (
     return failure(
       500,
       operatorErrorCodes.repositoryError,
-      "카테고리를 생성하지 못했습니다.",
+      "Failed to create category.",
       error,
     );
   }
@@ -843,7 +843,7 @@ export const createCategory = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "카테고리 생성 결과가 유효하지 않습니다.",
+      "Category creation result is invalid.",
       parsed.error.format(),
     );
   }
@@ -860,7 +860,7 @@ export const createCategory = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "카테고리 응답이 유효하지 않습니다.",
+      "Category response is invalid.",
       normalized.error.format(),
     );
   }
@@ -894,7 +894,7 @@ export const updateCategory = async (
     return failure(
       500,
       operatorErrorCodes.repositoryError,
-      "카테고리를 수정하지 못했습니다.",
+      "Failed to update category.",
       error,
     );
   }
@@ -903,7 +903,7 @@ export const updateCategory = async (
     return failure(
       404,
       operatorErrorCodes.metadataNotFound,
-      "카테고리가 존재하지 않습니다.",
+      "Category not found.",
     );
   }
 
@@ -915,7 +915,7 @@ export const updateCategory = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "카테고리 수정 결과가 유효하지 않습니다.",
+      "Category update result is invalid.",
       parsed.error.format(),
     );
   }
@@ -932,7 +932,7 @@ export const updateCategory = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "카테고리 응답이 유효하지 않습니다.",
+      "Category response is invalid.",
       normalized.error.format(),
     );
   }
@@ -952,7 +952,7 @@ export const listDifficultyLevels = async (
     return failure(
       500,
       operatorErrorCodes.repositoryError,
-      "난이도 목록을 조회하지 못했습니다.",
+      "Failed to fetch difficulty levels.",
       error,
     );
   }
@@ -1000,7 +1000,7 @@ export const findDifficultyByLabel = async (
     return failure(
       500,
       operatorErrorCodes.repositoryError,
-      "난이도를 조회하지 못했습니다.",
+      "Failed to fetch difficulty level.",
       error,
     );
   }
@@ -1017,7 +1017,7 @@ export const findDifficultyByLabel = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "난이도 레코드가 유효하지 않습니다.",
+      "Difficulty level record is invalid.",
       parsed.error.format(),
     );
   }
@@ -1034,7 +1034,7 @@ export const findDifficultyByLabel = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "난이도 응답이 유효하지 않습니다.",
+      "Difficulty level response is invalid.",
       normalized.error.format(),
     );
   }
@@ -1059,7 +1059,7 @@ export const createDifficulty = async (
     return failure(
       500,
       operatorErrorCodes.repositoryError,
-      "난이도를 생성하지 못했습니다.",
+      "Failed to create difficulty level.",
       error,
     );
   }
@@ -1072,7 +1072,7 @@ export const createDifficulty = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "난이도 생성 결과가 유효하지 않습니다.",
+      "Difficulty level creation result is invalid.",
       parsed.error.format(),
     );
   }
@@ -1089,7 +1089,7 @@ export const createDifficulty = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "난이도 응답이 유효하지 않습니다.",
+      "Difficulty level response is invalid.",
       normalized.error.format(),
     );
   }
@@ -1123,7 +1123,7 @@ export const updateDifficulty = async (
     return failure(
       500,
       operatorErrorCodes.repositoryError,
-      "난이도를 수정하지 못했습니다.",
+      "Failed to update difficulty level.",
       error,
     );
   }
@@ -1132,7 +1132,7 @@ export const updateDifficulty = async (
     return failure(
       404,
       operatorErrorCodes.metadataNotFound,
-      "난이도가 존재하지 않습니다.",
+      "Difficulty level not found.",
     );
   }
 
@@ -1144,7 +1144,7 @@ export const updateDifficulty = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "난이도 수정 결과가 유효하지 않습니다.",
+      "Difficulty level update result is invalid.",
       parsed.error.format(),
     );
   }
@@ -1161,7 +1161,7 @@ export const updateDifficulty = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "난이도 응답이 유효하지 않습니다.",
+      "Difficulty level response is invalid.",
       normalized.error.format(),
     );
   }
@@ -1183,7 +1183,7 @@ export const getUserProfileByAuthId = async (
     return failure(
       500,
       operatorErrorCodes.repositoryError,
-      "사용자 프로필을 조회하지 못했습니다.",
+      "Failed to fetch user profile.",
       error,
     );
   }
@@ -1192,7 +1192,7 @@ export const getUserProfileByAuthId = async (
     return failure(
       404,
       operatorErrorCodes.unauthorized,
-      "사용자 프로필이 존재하지 않습니다.",
+      "User profile not found.",
     );
   }
 
@@ -1208,7 +1208,7 @@ export const getUserProfileByAuthId = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "사용자 프로필 데이터가 유효하지 않습니다.",
+      "User profile data is invalid.",
       parsed.error.format(),
     );
   }

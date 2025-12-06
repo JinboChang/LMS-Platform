@@ -43,7 +43,7 @@ export const UpcomingAssignments = ({
                       <Link
                         href={href}
                         className="flex flex-col gap-3 rounded-lg border border-muted/60 bg-background/80 p-4 shadow-sm transition hover:border-primary/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                        aria-label={`${assignment.courseTitle} · ${assignment.title} 상세 보기`}
+                        aria-label={`${assignment.courseTitle} · ${assignment.title} details`}
                       >
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div className="space-y-1">
@@ -69,7 +69,7 @@ export const UpcomingAssignments = ({
                           ) : null}
                         </div>
                         <span className="inline-flex items-center gap-1 text-xs font-medium text-primary">
-                          자세히 보기
+                          View details
                           <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
                         </span>
                       </Link>

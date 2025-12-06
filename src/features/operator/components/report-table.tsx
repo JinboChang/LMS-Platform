@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
@@ -160,7 +160,7 @@ export const ReportTable = () => {
       >
         <Image
           src={buildPlaceholderImage(report.id)}
-          alt="신고 썸네일 이미지"
+          alt="Report thumbnail"
           width={96}
           height={96}
           className="h-16 w-16 rounded-md object-cover"
@@ -172,12 +172,12 @@ export const ReportTable = () => {
             </Badge>
             <Badge>{OperatorReportStatusLabelMap[report.status]}</Badge>
             <span className="text-xs text-muted-foreground">
-              {formatDateTime(report.reportedAt)} 신고
+              Reported at {formatDateTime(report.reportedAt)}
             </span>
             {report.actionCount > 0 ? (
               <Badge variant="secondary" className="gap-1">
                 <Shield className="h-3 w-3" />
-                {report.actionCount}건 조치
+                {report.actionCount} actions
               </Badge>
             ) : null}
           </div>
@@ -186,7 +186,7 @@ export const ReportTable = () => {
               {report.reason}
             </p>
             <p className="text-xs text-muted-foreground">
-              신고자 {report.reporter.name} · {report.reporter.email}
+              Reporter {report.reporter.name} · {report.reporter.email}
             </p>
           </div>
         </div>
@@ -199,10 +199,10 @@ export const ReportTable = () => {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-lg font-semibold">
-            <Shield className="h-5 w-5" /> 운영 신고 관리
+            <Shield className="h-5 w-5" /> Operations reports
           </div>
           <p className="text-sm text-muted-foreground">
-            신고 상태와 유형을 필터링해 자세한 정보를 확인하고 조치하세요.
+            Filter by status and target to review details and take action quickly.
           </p>
         </div>
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
@@ -210,33 +210,33 @@ export const ReportTable = () => {
             <Search className="h-4 w-4 text-muted-foreground" />
             <Input
               value={searchInput}
-              placeholder="사유 또는 신고자를 검색하세요"
+              placeholder="Search by reason or reporter"
               onChange={(event) => setSearchInput(event.target.value)}
               className="w-full"
             />
           </div>
           <Button variant="ghost" size="sm" onClick={resetFilters}>
-            초기화
+            Reset
           </Button>
         </div>
       </div>
 
       <div className="flex flex-col gap-3 rounded-lg border border-dashed p-4">
         <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-          <Filter className="h-4 w-4" /> 필터
+          <Filter className="h-4 w-4" /> Filters
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="status-filter">상태</Label>
+            <Label htmlFor="status-filter">Status</Label>
             <Select
               value={filters.status ?? SELECT_ALL_VALUE}
               onValueChange={handleStatusChange}
             >
               <SelectTrigger id="status-filter">
-                <SelectValue placeholder="전체" />
+                <SelectValue placeholder="All" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={SELECT_ALL_VALUE}>전체</SelectItem>
+                <SelectItem value={SELECT_ALL_VALUE}>All</SelectItem>
                 {statusOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
@@ -246,16 +246,16 @@ export const ReportTable = () => {
             </Select>
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="target-filter">신고 대상</Label>
+            <Label htmlFor="target-filter">Target</Label>
             <Select
               value={filters.targetType ?? SELECT_ALL_VALUE}
               onValueChange={handleTargetChange}
             >
               <SelectTrigger id="target-filter">
-                <SelectValue placeholder="전체" />
+                <SelectValue placeholder="All" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={SELECT_ALL_VALUE}>전체</SelectItem>
+                <SelectItem value={SELECT_ALL_VALUE}>All</SelectItem>
                 {targetOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
@@ -272,7 +272,7 @@ export const ReportTable = () => {
       {reportsQuery.isLoading ? (
         <div className="flex h-48 flex-col items-center justify-center gap-3 text-sm text-muted-foreground">
           <Shield className="h-6 w-6 animate-spin" />
-          신고 데이터를 불러오는 중입니다.
+          Loading reports...
         </div>
       ) : null}
 
@@ -282,14 +282,14 @@ export const ReportTable = () => {
           <span>
             {reportsQuery.error instanceof Error
               ? reportsQuery.error.message
-              : "신고 목록을 불러오지 못했어요."}
+              : "Failed to load reports."}
           </span>
           <Button
             variant="outline"
             size="sm"
             onClick={() => reportsQuery.refetch()}
           >
-            다시 시도
+            Retry
           </Button>
         </div>
       ) : null}
@@ -298,9 +298,9 @@ export const ReportTable = () => {
         <div className="flex flex-col items-center gap-3 rounded-md border border-dashed p-8 text-center">
           <Shield className="h-8 w-8 text-muted-foreground" />
           <div className="space-y-1">
-            <p className="text-sm font-medium text-foreground">표시할 신고가 없습니다.</p>
+            <p className="text-sm font-medium text-foreground">No reports to show.</p>
             <p className="text-xs text-muted-foreground">
-              필터 조건을 조정하거나 다른 키워드로 검색해보세요.
+              Adjust filters or search with a different keyword.
             </p>
           </div>
         </div>
@@ -314,4 +314,3 @@ export const ReportTable = () => {
     </Card>
   );
 };
-

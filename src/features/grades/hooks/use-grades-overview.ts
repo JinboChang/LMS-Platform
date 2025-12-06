@@ -26,7 +26,7 @@ const fetchGradesOverview = async (): Promise<GradesOverviewResponse> => {
     if (isAxiosError(error)) {
       const message = extractApiErrorMessage(
         error,
-        "성적 정보를 불러오지 못했습니다.",
+        "Failed to load the grades overview.",
       );
       const enrichedError: GradesOverviewError = new Error(message);
       enrichedError.status = error.response?.status;
@@ -38,7 +38,7 @@ const fetchGradesOverview = async (): Promise<GradesOverviewResponse> => {
     }
 
     throw new Error(
-      extractApiErrorMessage(error, "성적 정보를 불러오지 못했습니다."),
+      extractApiErrorMessage(error, "Failed to load the grades overview."),
     );
   }
 };

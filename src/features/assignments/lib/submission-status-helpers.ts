@@ -29,19 +29,19 @@ export const resolveSubmissionBadge = (
 ): SubmissionBadgePresentation =>
   match({ status, late })
     .with({ status: "graded" }, () => ({
-      label: "채점 완료",
+      label: "Graded",
       variant: "secondary" as const,
     }))
     .with({ status: "resubmission_required" }, ({ late: isLate }) => ({
-      label: isLate ? "지각 재제출 요청" : "재제출 요청",
+      label: isLate ? "Late resubmission requested" : "Resubmission requested",
       variant: "destructive" as const,
     }))
     .with({ status: "submitted", late: true }, () => ({
-      label: "지각 제출",
+      label: "Submitted late",
       variant: "destructive" as const,
     }))
     .otherwise(() => ({
-      label: "제출 완료",
+      label: "Submitted",
       variant: "default" as const,
     }));
 
@@ -50,7 +50,7 @@ export const buildSubmissionHeadline = (
   isResubmission: boolean,
 ) =>
   match({ status, isResubmission })
-    .with({ status: "resubmission_required" }, () => "재제출이 필요합니다")
-    .with({ status: "graded" }, () => "채점이 완료되었습니다")
-    .with({ isResubmission: true }, () => "재제출이 접수되었습니다")
-    .otherwise(() => "제출이 접수되었습니다");
+    .with({ status: "resubmission_required" }, () => "Resubmission required")
+    .with({ status: "graded" }, () => "Grading completed")
+    .with({ isResubmission: true }, () => "Resubmission received")
+    .otherwise(() => "Submission received");

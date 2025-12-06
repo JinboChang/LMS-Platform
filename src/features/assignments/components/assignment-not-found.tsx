@@ -5,16 +5,16 @@ import { Button } from "@/components/ui/button";
 
 const messages = {
   forbidden: {
-    title: "접근 권한이 없습니다",
-    description: "이 과제는 해당 코스를 수강 중인 학습자만 열람할 수 있습니다.",
+    title: "Access denied",
+    description: "Only learners enrolled in this course can view this assignment.",
   },
   notFound: {
-    title: "과제를 찾을 수 없습니다",
-    description: "요청하신 과제가 존재하지 않거나 아직 공개되지 않았습니다.",
+    title: "Assignment not found",
+    description: "The assignment does not exist or is not published yet.",
   },
   error: {
-    title: "오류가 발생했습니다",
-    description: "잠시 후 다시 시도해주세요.",
+    title: "An error occurred",
+    description: "Please try again in a moment.",
   },
 } as const;
 
@@ -40,7 +40,7 @@ export const AssignmentNotFound = ({
         <p>{copy.description}</p>
         {onRetry ? (
           <Button type="button" onClick={onRetry} variant="secondary">
-            다시 시도하기
+            Try again
           </Button>
         ) : null}
       </CardContent>

@@ -65,12 +65,12 @@ export default function OnboardingPage({ params }: OnboardingPageProps) {
     <div className="mx-auto grid min-h-screen w-full max-w-6xl gap-10 px-6 py-16 md:grid-cols-[1.1fr_0.9fr] md:items-center">
       <section className="space-y-6">
         <header className="space-y-4">
-          <p className="text-sm font-medium text-slate-500">역할 기반 온보딩</p>
+          <p className="text-sm font-medium text-slate-500">Onboarding basics</p>
           <h1 className="text-4xl font-semibold text-slate-900 md:text-5xl">
-            학습 목표에 맞는 역할을 선택하고 프로필을 완성하세요.
+            Choose your role and tailor your learning space
           </h1>
           <p className="text-base text-slate-600">
-            최소한의 정보만으로도 빠르게 시작할 수 있도록 설계했습니다. 역할에 따라 연결되는 대시보드와 가이드를 즉시 제공해 드릴게요.
+            Tell us a little about your goals so we can send you to the right dashboard and guides without any extra setup.
           </p>
         </header>
         <div className="rounded-2xl border border-slate-200 bg-white/70 p-6 shadow-sm backdrop-blur">
@@ -84,7 +84,7 @@ export default function OnboardingPage({ params }: OnboardingPageProps) {
         <figure className="overflow-hidden rounded-3xl border border-slate-200 shadow-lg">
           <Image
             src={heroImageUrl}
-            alt="온보딩"
+            alt="Onboarding illustration"
             width={960}
             height={960}
             className="h-full w-full object-cover"

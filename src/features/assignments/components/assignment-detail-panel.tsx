@@ -16,7 +16,7 @@ type AssignmentDetailPanelProps = {
 };
 
 const formatScoreWeight = (scoreWeight: number) => {
-  const formatter = new Intl.NumberFormat("ko-KR", {
+  const formatter = new Intl.NumberFormat("en-US", {
     style: "percent",
     minimumFractionDigits: scoreWeight % 1 === 0 ? 0 : 1,
     maximumFractionDigits: 1,
@@ -41,16 +41,16 @@ export const AssignmentDetailPanel = ({
       <CardHeader className="space-y-4">
         <div className="flex flex-wrap items-center gap-3">
           <Badge variant="outline" className={statusTone}>
-            {assignment.status === "closed" ? "제출 종료" : "진행 중"}
+            {assignment.status === "closed" ? "Submission closed" : "In progress"}
           </Badge>
           {assignment.lateSubmissionAllowed ? (
             <Badge variant="secondary" className="bg-amber-500/10 text-amber-600">
-              지각 제출 허용
+              Late submission allowed
             </Badge>
           ) : null}
           {isLate ? (
             <Badge variant="destructive" className="bg-rose-500/10 text-rose-500">
-              마감 경과
+              Past due
             </Badge>
           ) : null}
         </div>
@@ -60,41 +60,41 @@ export const AssignmentDetailPanel = ({
         <dl className="grid gap-4 text-sm text-slate-600 md:grid-cols-2">
           <div className="space-y-1">
             <dt className="text-xs uppercase tracking-wide text-slate-500">
-              마감일
+              Due at
             </dt>
             <dd className="font-medium text-slate-800">
               {formatDueDateTime(assignment.dueAt)}
             </dd>
             <dd className="text-xs text-slate-500">
-              {formatDueRelative(assignment.dueAt)} 기준
+              {formatDueRelative(assignment.dueAt)} remaining
             </dd>
           </div>
           <div className="space-y-1">
             <dt className="text-xs uppercase tracking-wide text-slate-500">
-              점수 비중
+              Score weight
             </dt>
             <dd className="font-medium text-slate-800">
               {formatScoreWeight(assignment.scoreWeight)}
             </dd>
             <dd className="text-xs text-slate-500">
-              코스 총점 대비 비중
+              Weight toward course total
             </dd>
           </div>
         </dl>
       </CardHeader>
       <CardContent className="space-y-6 text-sm text-slate-700">
         <section className="space-y-2">
-          <h2 className="text-base font-semibold text-slate-900">과제 설명</h2>
+          <h2 className="text-base font-semibold text-slate-900">Assignment description</h2>
           <p className="leading-relaxed text-slate-700">{assignment.description}</p>
         </section>
         <Separator />
         <section className="space-y-2">
-          <h2 className="text-base font-semibold text-slate-900">제출 가이드</h2>
+          <h2 className="text-base font-semibold text-slate-900">Submission guide</h2>
           <p className="leading-relaxed text-slate-700">{assignment.instructions}</p>
         </section>
         <Separator />
         <section className="space-y-2">
-          <h2 className="text-base font-semibold text-slate-900">제출 요구사항</h2>
+          <h2 className="text-base font-semibold text-slate-900">Submission requirements</h2>
           {assignment.submissionRequirements
             .split(/\n+/)
             .filter(Boolean)

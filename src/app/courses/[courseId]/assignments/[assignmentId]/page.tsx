@@ -51,7 +51,7 @@ export default function AssignmentDetailPage({
       })
       .catch(() => {
         if (active) {
-          setParamError("요청 경로를 해석하지 못했습니다.");
+          setParamError("Unable to parse request path.");
         }
       });
 
@@ -173,20 +173,20 @@ export default function AssignmentDetailPage({
 
   let formTone: AssignmentSubmitFormTone = "default";
   let formHelperText = hasSubmission
-    ? "재제출 시 기존 제출 내용이 교체됩니다."
-    : "요구 사항을 확인한 뒤 제출해주세요.";
-  let actionLabel = hasSubmission ? "재제출하기" : "제출하기";
+    ? "Resubmitting will replace your previous submission."
+    : "Review the requirements before submitting.";
+  let actionLabel = hasSubmission ? "Resubmit" : "Submit";
   const formDisabled = !canSubmit;
 
   if (!canSubmit) {
     formTone = "destructive";
     formHelperText = isLate && !assignment.lateSubmissionAllowed
-      ? "마감 기한이 지나 제출할 수 없습니다."
-      : "지금은 제출을 진행할 수 없습니다.";
+      ? "The deadline has passed and submissions are closed."
+      : "Submitting is currently unavailable.";
   } else if (isLate) {
     formTone = "warning";
-    actionLabel = hasSubmission ? "지각 재제출하기" : "지각 제출하기";
-    formHelperText = "지각 제출은 지각으로 기록됩니다.";
+    actionLabel = hasSubmission ? "Resubmit Late" : "Submit Late";
+    formHelperText = "Late submissions will be recorded as late.";
   }
 
   const defaultFormValues = submission
@@ -200,7 +200,7 @@ export default function AssignmentDetailPage({
     <div className={containerClass}>
       <header className="space-y-2">
         <p className="text-sm text-slate-500">
-          나의 코스 · 과제 상세 · {resolvedParams.courseId}
+          My Courses · Assignment Detail · {resolvedParams.courseId}
         </p>
         <h1 className="text-3xl font-semibold text-slate-900">
           {assignment.title}

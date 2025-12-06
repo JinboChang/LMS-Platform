@@ -38,42 +38,42 @@ export const FeedbackDetailDialog = ({ assignment, children }: FeedbackDetailDia
           </Badge>
         </div>
         <SheetDescription>
-          {assignment.feedbackText ?? "상세 피드백이 아직 등록되지 않았습니다."}
+          {assignment.feedbackText ?? "Detailed feedback is not available yet."}
         </SheetDescription>
       </SheetHeader>
       <div className="mt-6 flex flex-col gap-3">
         <div className={INFO_CLASS}>
-          <span className="text-xs text-muted-foreground">점수</span>
+          <span className="text-xs text-muted-foreground">Score</span>
           <span className="text-base font-semibold text-foreground">
             {formatScore(assignment.score)}
           </span>
         </div>
         <div className={INFO_CLASS}>
-          <span className="text-xs text-muted-foreground">반영 비율</span>
+          <span className="text-xs text-muted-foreground">Weight</span>
           <span className="text-base font-medium text-foreground">
             {formatPercentage(assignment.scoreWeight)}
           </span>
         </div>
         <div className={INFO_CLASS}>
-          <span className="text-xs text-muted-foreground">제출일</span>
+          <span className="text-xs text-muted-foreground">Submitted at</span>
           <span className="text-sm text-foreground">
             {formatDateTime(assignment.submittedAt)}
           </span>
         </div>
         <div className={INFO_CLASS}>
-          <span className="text-xs text-muted-foreground">채점 완료</span>
+          <span className="text-xs text-muted-foreground">Graded at</span>
           <span className="text-sm text-foreground">
             {formatDateTime(assignment.gradedAt)}
           </span>
         </div>
         <div className={INFO_CLASS}>
-          <span className="text-xs text-muted-foreground">지연 여부</span>
+          <span className="text-xs text-muted-foreground">Late</span>
           <span className="text-sm text-foreground">
             {buildLateLabel(assignment.late)}
           </span>
         </div>
         <div className={INFO_CLASS}>
-          <span className="text-xs text-muted-foreground">피드백 업데이트</span>
+          <span className="text-xs text-muted-foreground">Feedback updated</span>
           <span className="text-sm text-foreground">
             {formatDateTime(assignment.feedbackUpdatedAt)}
           </span>

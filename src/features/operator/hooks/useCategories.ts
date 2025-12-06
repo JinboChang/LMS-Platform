@@ -21,7 +21,7 @@ const fetchCategories = async (): Promise<OperatorCategory[]> => {
   } catch (error) {
     const message = extractApiErrorMessage(
       error,
-      "코스 카테고리를 불러오지 못했습니다.",
+      "Failed to load categories.",
     );
     throw new Error(message);
   }
@@ -40,7 +40,7 @@ const createCategoryRequest = async (payload: OperatorCategoryFormValues) => {
   } catch (error) {
     const message = extractApiErrorMessage(
       error,
-      "카테고리를 생성하지 못했습니다.",
+      "Failed to create category.",
     );
     throw new Error(message);
   }
@@ -62,7 +62,7 @@ const updateCategoryRequest = async (
   } catch (error) {
     const message = extractApiErrorMessage(
       error,
-      "카테고리를 수정하지 못했습니다.",
+      "Failed to update category.",
     );
     throw new Error(message);
   }

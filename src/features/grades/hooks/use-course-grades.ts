@@ -31,7 +31,7 @@ const fetchCourseGrades = async (
     if (isAxiosError(error)) {
       const message = extractApiErrorMessage(
         error,
-        "강의별 성적 정보를 불러오지 못했습니다.",
+        "Failed to load course grades.",
       );
       const enrichedError: CourseGradesError = new Error(message);
       enrichedError.status = error.response?.status;
@@ -43,7 +43,7 @@ const fetchCourseGrades = async (
     }
 
     throw new Error(
-      extractApiErrorMessage(error, "강의별 성적 정보를 불러오지 못했습니다."),
+      extractApiErrorMessage(error, "Failed to load course grades."),
     );
   }
 };

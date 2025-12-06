@@ -11,12 +11,12 @@ export const OnboardingFormSchema = OnboardingRequestSchema.extend({
   role: optionalRoleSchema,
   acceptedTerms: z
     .boolean()
-    .refine((value) => value, "약관에 동의해야 합니다."),
+    .refine((value) => value, "You must agree to the terms."),
 }).superRefine((data, ctx) => {
   if (!data.role) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: "역할을 선택해 주세요.",
+      message: "Select a role to continue.",
       path: ["role"],
     });
   }
@@ -36,11 +36,11 @@ export const toOnboardingRequestPayload = (
   values: OnboardingFormValues,
 ): OnboardingRequest => {
   if (!values.role) {
-    throw new Error("역할을 선택해 주세요.");
+    throw new Error("Select a role to continue.");
   }
 
   if (!values.acceptedTerms) {
-    throw new Error("약관에 동의해야 온보딩을 진행할 수 있습니다.");
+    throw new Error("You must agree to the terms before onboarding.");
   }
 
   return {

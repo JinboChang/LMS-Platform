@@ -5,7 +5,7 @@ export const MIN_SUBMISSION_TEXT_LENGTH = 20;
 const optionalUrlSchema = z
   .string()
   .trim()
-  .url({ message: "유효한 URL을 입력해주세요." })
+  .url({ message: "Please enter a valid URL." })
   .optional()
   .or(
     z
@@ -18,7 +18,7 @@ export const AssignmentSubmissionFormSchema = z.object({
     .string()
     .trim()
     .min(MIN_SUBMISSION_TEXT_LENGTH, {
-      message: `제출 본문은 최소 ${MIN_SUBMISSION_TEXT_LENGTH}자 이상 작성해주세요.`,
+      message: `Submission text must be at least ${MIN_SUBMISSION_TEXT_LENGTH} characters.`,
     }),
   submissionLink: optionalUrlSchema,
 });

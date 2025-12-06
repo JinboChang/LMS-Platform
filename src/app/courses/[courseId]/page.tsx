@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -49,12 +49,12 @@ const ErrorState = ({ title, description, onRetry, onBack }: ErrorStateProps) =>
     <div className="flex gap-2">
       {onBack ? (
         <Button type="button" variant="outline" onClick={onBack}>
-          뒤로 가기
+          Go back
         </Button>
       ) : null}
       {onRetry ? (
         <Button type="button" onClick={onRetry}>
-          다시 시도
+          Retry
         </Button>
       ) : null}
     </div>
@@ -91,7 +91,7 @@ export default function CourseDetailPage({ params }: CourseDetailPageProps) {
       })
       .catch(() => {
         if (active) {
-          setParamError("요청 경로를 해석하지 못했습니다.");
+          setParamError("Could not read the request path.");
         }
       });
 
@@ -138,7 +138,7 @@ export default function CourseDetailPage({ params }: CourseDetailPageProps) {
       showEnrollSuccess(courseTitle);
       courseQuery.refetch();
     } catch (error) {
-      showError(error instanceof Error ? error.message : "요청 처리에 실패했습니다.");
+      showError(error instanceof Error ? error.message : "Failed to process the request.");
     }
   };
 
@@ -146,7 +146,7 @@ export default function CourseDetailPage({ params }: CourseDetailPageProps) {
     return (
       <div className={containerClass}>
         <ErrorState
-          title="잘못된 요청"
+          title="Invalid request"
           description={paramError}
           onBack={() => router.back()}
         />
@@ -166,11 +166,11 @@ export default function CourseDetailPage({ params }: CourseDetailPageProps) {
     return (
       <div className={containerClass}>
         <ErrorState
-          title="코스 정보를 불러오지 못했습니다"
+          title="Failed to load course"
           description={
             courseQuery.error instanceof Error
               ? courseQuery.error.message
-              : "잠시 후 다시 시도해주세요."
+              : "Please try again soon."
           }
           onRetry={retry}
         />
@@ -184,11 +184,11 @@ export default function CourseDetailPage({ params }: CourseDetailPageProps) {
 
   const actionLabel = isEnrolled
     ? cancelMutation.isPending
-      ? "수강 취소 중..."
-      : "수강 취소"
+      ? "Cancelling..."
+      : "Cancel enrollment"
     : enrollMutation.isPending
-      ? "수강 신청 중..."
-      : "수강 신청";
+      ? "Enrolling..."
+      : "Enroll now";
 
   const actionDisabled =
     enrollMutation.isPending ||
@@ -221,14 +221,14 @@ export default function CourseDetailPage({ params }: CourseDetailPageProps) {
           </div>
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900">코스 소개</h2>
+            <h2 className="text-lg font-semibold text-slate-900">About this course</h2>
             <p className="text-sm leading-relaxed text-slate-600">{course.description}</p>
           </section>
 
           <Separator />
 
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900">커리큘럼</h2>
+            <h2 className="text-lg font-semibold text-slate-900">Curriculum</h2>
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
               <p className="whitespace-pre-line">{course.curriculum}</p>
             </div>
@@ -237,12 +237,12 @@ export default function CourseDetailPage({ params }: CourseDetailPageProps) {
 
         <aside className="space-y-6">
           <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-base font-semibold text-slate-900">코스 정보</h2>
+            <h2 className="text-base font-semibold text-slate-900">Course info</h2>
             <div className="mt-4 space-y-3 text-sm text-slate-600">
               <p className="flex items-center gap-2">
                 <Users className="h-4 w-4 text-slate-400" />
                 <span>
-                  {course.activeEnrollmentCount.toLocaleString()}명의 학습자가 수강 중입니다.
+                  {course.activeEnrollmentCount.toLocaleString()} learners enrolled.
                 </span>
               </p>
               <p className="flex items-center gap-2">
@@ -253,21 +253,21 @@ export default function CourseDetailPage({ params }: CourseDetailPageProps) {
                 <Calendar className="h-4 w-4 text-slate-400" />
                 <span>
                   {isEnrolled
-                    ? "이미 수강 중인 코스입니다."
-                    : "지금 바로 수강 신청이 가능합니다."}
+                    ? "You are already enrolled in this course."
+                    : "You can enroll right now."}
                 </span>
               </p>
             </div>
 
             {!guard.isAuthenticated ? (
               <p className="mt-4 rounded-lg bg-amber-50 p-3 text-xs text-amber-700">
-                로그인이 필요한 기능입니다.
+                Please sign in to enroll.
               </p>
             ) : null}
 
             {guard.isAuthenticated && !guard.isLearner ? (
               <p className="mt-4 rounded-lg bg-rose-50 p-3 text-xs text-rose-600">
-                학습자 역할로만 수강 신청을 진행할 수 있습니다.
+                Only learners can enroll in courses.
               </p>
             ) : null}
 

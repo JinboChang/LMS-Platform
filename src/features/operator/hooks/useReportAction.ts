@@ -94,7 +94,7 @@ export const useOperatorReportAction = ({
 
         const message = extractApiErrorMessage(
           error,
-          "신고를 처리하지 못했습니다.",
+          "Failed to process the report.",
         );
 
         throw new Error(message);
@@ -122,10 +122,10 @@ export const useOperatorReportAction = ({
 const operatorErrorMessages = {
   invalidStatusTransition: {
     code: "operator/invalid-status-transition",
-    message: "허용되지 않은 상태 전환입니다.",
+    message: "Invalid status transition.",
   },
   reportAlreadyResolved: {
     code: "operator/report-already-resolved",
-    message: "이미 처리 완료된 신고입니다.",
+    message: "This report is already resolved.",
   },
 } as const;

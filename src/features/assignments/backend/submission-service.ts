@@ -44,7 +44,7 @@ export const submitAssignment = async (
     return failure(
       400,
       assignmentSubmissionErrorCodes.invalidPayload,
-      "제출 요청 형식이 올바르지 않습니다.",
+      "Submission payload is invalid.",
       parsedPayload.error.format(),
     );
   }
@@ -61,7 +61,7 @@ export const submitAssignment = async (
       return failure(
         404,
         assignmentSubmissionErrorCodes.learnerNotFound,
-        "학습자 프로필을 찾을 수 없습니다.",
+        "Learner profile not found.",
       );
     }
 
@@ -69,7 +69,7 @@ export const submitAssignment = async (
       return failure(
         403,
         assignmentSubmissionErrorCodes.notLearnerRole,
-        "학습자만 과제를 제출할 수 있습니다.",
+        "Only learners can submit assignments.",
       );
     }
 
@@ -79,7 +79,7 @@ export const submitAssignment = async (
       return failure(
         404,
         assignmentSubmissionErrorCodes.assignmentNotFound,
-        "존재하지 않는 과제입니다.",
+        "Assignment not found.",
       );
     }
 
@@ -87,7 +87,7 @@ export const submitAssignment = async (
       return failure(
         403,
         assignmentSubmissionErrorCodes.assignmentNotPublished,
-        "아직 게시되지 않은 과제입니다.",
+        "Assignment is not published yet.",
       );
     }
 
@@ -95,7 +95,7 @@ export const submitAssignment = async (
       return failure(
         403,
         assignmentSubmissionErrorCodes.assignmentClosed,
-        "마감된 과제입니다.",
+        "Assignment is closed.",
       );
     }
 
@@ -109,7 +109,7 @@ export const submitAssignment = async (
       return failure(
         403,
         assignmentSubmissionErrorCodes.enrollmentInactive,
-        "해당 코스에 활성화된 수강 정보가 없습니다.",
+        "Active enrollment for this course is required.",
       );
     }
 
@@ -121,7 +121,7 @@ export const submitAssignment = async (
       return failure(
         403,
         assignmentSubmissionErrorCodes.lateNotAllowed,
-        "마감 기한이 지난 과제는 제출할 수 없습니다.",
+        "Late submissions are not allowed for this assignment.",
       );
     }
 
@@ -153,10 +153,10 @@ export const submitAssignment = async (
         isResubmission: Boolean(existingSubmission),
         late: upserted.late,
       })
-        .with({ isResubmission: true, late: true }, () => "지각 재제출이 완료되었습니다.")
-        .with({ isResubmission: true, late: false }, () => "재제출이 완료되었습니다.")
-        .with({ isResubmission: false, late: true }, () => "지각 제출이 완료되었습니다.")
-        .otherwise(() => "제출이 완료되었습니다."),
+        .with({ isResubmission: true, late: true }, () => "Late resubmission completed.")
+        .with({ isResubmission: true, late: false }, () => "Resubmission completed.")
+        .with({ isResubmission: false, late: true }, () => "Late submission completed.")
+        .otherwise(() => "Submission completed."),
       previousStatus: existingSubmission?.status ?? null,
     });
 
@@ -167,7 +167,7 @@ export const submitAssignment = async (
     return failure(
       500,
       assignmentSubmissionErrorCodes.repositoryError,
-      "제출 처리 중 문제가 발생했습니다.",
+      "An error occurred while processing the submission.",
       error instanceof Error ? error.message : error,
     );
   }

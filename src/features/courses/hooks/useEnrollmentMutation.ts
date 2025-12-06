@@ -31,15 +31,15 @@ const parseEnrollmentError = (error: unknown) => {
 
     if (typeof code === 'string') {
       if (code === enrollmentErrorCodes.duplicateEnrollment) {
-        return '이미 수강 중인 코스입니다.';
+        return 'You are already enrolled in this course.';
       }
 
       if (code === enrollmentErrorCodes.enrollmentNotFound) {
-        return '수강 이력을 찾을 수 없습니다.';
+        return 'Enrollment could not be found.';
       }
 
       if (code === enrollmentErrorCodes.unauthorized) {
-        return '로그인이 필요합니다.';
+        return 'Please sign in to continue.';
       }
     }
 
@@ -48,7 +48,7 @@ const parseEnrollmentError = (error: unknown) => {
     }
   }
 
-  return extractApiErrorMessage(error, '수강 처리 중 오류가 발생했습니다.');
+  return extractApiErrorMessage(error, 'Failed to update enrollment.');
 };
 
 type EnrollVariables = EnrollmentRequestDto;
@@ -78,7 +78,7 @@ export const useEnrollmentMutation = () => {
         const authConfig = await createAuthRequestConfig();
 
         if (!authConfig.headers?.Authorization) {
-          throw new Error('세션을 확인할 수 없습니다. 다시 로그인해 주세요.');
+          throw new Error('Authorization header is missing. Please sign in.');
         }
 
         const { data } = await apiClient.post(
@@ -102,7 +102,7 @@ export const useEnrollmentMutation = () => {
         const authConfig = await createAuthRequestConfig();
 
         if (!authConfig.headers?.Authorization) {
-          throw new Error('세션을 확인할 수 없습니다. 다시 로그인해 주세요.');
+          throw new Error('Authorization header is missing. Please sign in.');
         }
 
         const { data } = await apiClient.patch(

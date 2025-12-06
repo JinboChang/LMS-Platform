@@ -30,7 +30,7 @@ export const registerOnboardingRoutes = (app: Hono<AppEnv>) => {
         failure(
           400,
           onboardingErrorCodes.invalidPayload,
-          "요청 본문을 읽을 수 없습니다.",
+          "Failed to read request body.",
           error instanceof Error ? error.message : error
         )
       );

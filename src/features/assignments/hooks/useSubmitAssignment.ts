@@ -55,14 +55,14 @@ const postAssignmentSubmission = async (
         | undefined;
       const message = extractApiErrorMessage(
         error,
-        "과제 제출에 실패했습니다.",
+        "Failed to submit the assignment.",
       );
 
       throw new AssignmentSubmissionClientError(message, code);
     }
 
     const fallbackMessage =
-      error instanceof Error ? error.message : "과제 제출에 실패했습니다.";
+      error instanceof Error ? error.message : "Failed to submit the assignment.";
 
     throw new AssignmentSubmissionClientError(fallbackMessage);
   }

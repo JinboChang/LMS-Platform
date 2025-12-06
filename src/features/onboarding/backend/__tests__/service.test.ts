@@ -53,7 +53,7 @@ const createSupabaseClient = () => {
 describe("processOnboarding", () => {
   const payload = {
     email: "user@example.com",
-    name: "홍길동",
+    name: "John Doe",
     phoneNumber: "+821012345678",
     role: "learner",
     acceptedTerms: true,

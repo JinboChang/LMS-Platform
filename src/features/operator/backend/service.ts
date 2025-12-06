@@ -74,9 +74,7 @@ type WithOperator = ServiceContext & {
 const ensureOperatorContext = async (
   client: SupabaseClient,
   authUserId: string,
-): Promise<
-  HandlerResult<OperatorContext, OperatorServiceError, unknown>
-> => {
+): Promise<HandlerResult<OperatorContext, OperatorServiceError, unknown>> => {
   const profileResult = await getUserProfileByAuthId(client, authUserId);
 
   if (!profileResult.ok) {
@@ -87,7 +85,7 @@ const ensureOperatorContext = async (
       return failure(
         403,
         operatorErrorCodes.unauthorized,
-        "운영 권한이 없습니다.",
+        "Operator role is required.",
       );
     }
 
@@ -113,7 +111,7 @@ const ensureOperatorContext = async (
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "운영자 프로필이 유효하지 않습니다.",
+      "Operator profile is invalid.",
       parsedProfile.error.format(),
     );
   }
@@ -122,7 +120,7 @@ const ensureOperatorContext = async (
     return failure(
       403,
       operatorErrorCodes.forbidden,
-      "운영 전용 기능입니다.",
+      "Operator permissions are required.",
     );
   }
 
@@ -173,7 +171,7 @@ const parseFilterQuery = (
     return failure(
       400,
       operatorErrorCodes.validationError,
-      "신고 검색 조건이 올바르지 않습니다.",
+      "Invalid report filter parameters.",
       parsed.error.format(),
     );
   }
@@ -190,7 +188,7 @@ const parseStatusPayload = (
     return failure(
       400,
       operatorErrorCodes.validationError,
-      "신고 상태 변경 요청이 유효하지 않습니다.",
+      "Invalid report status payload.",
       parsed.error.format(),
     );
   }
@@ -207,7 +205,7 @@ const parseActionPayload = (
     return failure(
       400,
       operatorErrorCodes.validationError,
-      "신고 조치 요청이 유효하지 않습니다.",
+      "Invalid report action payload.",
       parsed.error.format(),
     );
   }
@@ -224,7 +222,7 @@ const parseCategoryPayload = (
     return failure(
       400,
       operatorErrorCodes.validationError,
-      "카테고리 요청 본문이 유효하지 않습니다.",
+      "Invalid category payload.",
       parsed.error.format(),
     );
   }
@@ -241,7 +239,7 @@ const parseDifficultyPayload = (
     return failure(
       400,
       operatorErrorCodes.validationError,
-      "난이도 요청 본문이 유효하지 않습니다.",
+      "Invalid difficulty payload.",
       parsed.error.format(),
     );
   }
@@ -252,16 +250,13 @@ const parseDifficultyPayload = (
 export const requireOperator = async (
   client: SupabaseClient,
   authUserId: string,
-): Promise<
-  HandlerResult<OperatorContext, OperatorServiceError, unknown>
-> => ensureOperatorContext(client, authUserId);
+): Promise<HandlerResult<OperatorContext, OperatorServiceError, unknown>> =>
+  ensureOperatorContext(client, authUserId);
 
 export const getOperatorReports = async (
   { client, logger, operator }: WithOperator,
   rawQuery: unknown,
-): Promise<
-  HandlerResult<ReportListResponse, OperatorServiceError, unknown>
-> => {
+): Promise<HandlerResult<ReportListResponse, OperatorServiceError, unknown>> => {
   void operator;
 
   const queryResult = parseFilterQuery(rawQuery);
@@ -287,7 +282,7 @@ export const getOperatorReports = async (
       reportsResult as ErrorResult<OperatorServiceError, unknown>;
 
     if (errorResult.status >= 500) {
-      logger.error("신고 목록 조회 실패", errorResult.error);
+      logger.error("Failed to query report list", errorResult.error);
     }
 
     return reportsResult;
@@ -296,11 +291,11 @@ export const getOperatorReports = async (
   const parsed = ReportListResponseSchema.safeParse(reportsResult.data);
 
   if (!parsed.success) {
-    logger.error("신고 목록 응답 검증 실패", parsed.error);
+    logger.error("Report list response validation failed", parsed.error);
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "신고 목록 응답이 유효하지 않습니다.",
+      "Report list response is invalid.",
       parsed.error.format(),
     );
   }
@@ -311,9 +306,7 @@ export const getOperatorReports = async (
 export const getOperatorReportDetail = async (
   { client, logger, operator }: WithOperator,
   reportId: string,
-): Promise<
-  HandlerResult<ReportDetail, OperatorServiceError, unknown>
-> => {
+): Promise<HandlerResult<ReportDetail, OperatorServiceError, unknown>> => {
   void operator;
 
   const reportResult = await getReportDetail(client, reportId);
@@ -323,7 +316,7 @@ export const getOperatorReportDetail = async (
       reportResult as ErrorResult<OperatorServiceError, unknown>;
 
     if (errorResult.status >= 500) {
-      logger.error("신고 상세 조회 실패", errorResult.error);
+      logger.error("Failed to fetch report detail", errorResult.error);
     }
 
     return reportResult;
@@ -332,11 +325,11 @@ export const getOperatorReportDetail = async (
   const parsed = ReportDetailSchema.safeParse(reportResult.data);
 
   if (!parsed.success) {
-    logger.error("신고 상세 응답 검증 실패", parsed.error);
+    logger.error("Report detail validation failed", parsed.error);
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "신고 상세 응답이 유효하지 않습니다.",
+      "Report detail response is invalid.",
       parsed.error.format(),
     );
   }
@@ -348,9 +341,7 @@ export const updateOperatorReportStatus = async (
   { client, logger, operator }: WithOperator,
   reportId: string,
   rawBody: unknown,
-): Promise<
-  HandlerResult<ReportDetail, OperatorServiceError, unknown>
-> => {
+): Promise<HandlerResult<ReportDetail, OperatorServiceError, unknown>> => {
   void operator;
 
   const payloadResult = parseStatusPayload(rawBody);
@@ -384,7 +375,7 @@ export const updateOperatorReportStatus = async (
     return failure(
       409,
       operatorErrorCodes.invalidStatusTransition,
-      "신고 상태 전환 순서가 올바르지 않습니다.",
+      "Invalid report status transition.",
     );
   }
 
@@ -399,7 +390,7 @@ export const updateOperatorReportStatus = async (
       updateResult as ErrorResult<OperatorServiceError, unknown>;
 
     if (errorResult.status >= 500) {
-      logger.error("신고 상태 업데이트 실패", errorResult.error);
+      logger.error("Failed to update report status", errorResult.error);
     }
 
     return updateResult;
@@ -408,11 +399,11 @@ export const updateOperatorReportStatus = async (
   const parsed = ReportDetailSchema.safeParse(updateResult.data);
 
   if (!parsed.success) {
-    logger.error("신고 상태 응답 검증 실패", parsed.error);
+    logger.error("Report status response validation failed", parsed.error);
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "신고 상태 응답이 유효하지 않습니다.",
+      "Report status response is invalid.",
       parsed.error.format(),
     );
   }
@@ -424,9 +415,7 @@ export const recordOperatorReportAction = async (
   { client, logger, operator }: WithOperator,
   reportId: string,
   rawBody: unknown,
-): Promise<
-  HandlerResult<ReportDetail, OperatorServiceError, unknown>
-> => {
+): Promise<HandlerResult<ReportDetail, OperatorServiceError, unknown>> => {
   const payloadResult = parseActionPayload(rawBody);
 
   if (!payloadResult.ok) {
@@ -450,7 +439,7 @@ export const recordOperatorReportAction = async (
     return failure(
       409,
       operatorErrorCodes.reportAlreadyResolved,
-      "이미 처리 완료된 신고입니다.",
+      "This report is already resolved.",
     );
   }
 
@@ -467,7 +456,7 @@ export const recordOperatorReportAction = async (
       actionResult as ErrorResult<OperatorServiceError, unknown>;
 
     if (errorResult.status >= 500) {
-      logger.error("신고 조치 기록 실패", errorResult.error);
+      logger.error("Failed to record report action", errorResult.error);
     }
 
     return failure(
@@ -487,11 +476,11 @@ export const recordOperatorReportAction = async (
   const parsed = ReportDetailSchema.safeParse(refreshedResult.data);
 
   if (!parsed.success) {
-    logger.error("신고 조치 응답 검증 실패", parsed.error);
+    logger.error("Report detail validation failed after action", parsed.error);
     return failure(
       500,
       operatorErrorCodes.validationError,
-      "신고 상세 응답이 유효하지 않습니다.",
+      "Report detail response is invalid.",
       parsed.error.format(),
     );
   }
@@ -502,9 +491,7 @@ export const recordOperatorReportAction = async (
 export const getOperatorCategories = async ({
   client,
   operator,
-}: WithOperator): Promise<
-  HandlerResult<Category[], OperatorServiceError, unknown>
-> => {
+}: WithOperator): Promise<HandlerResult<Category[], OperatorServiceError, unknown>> => {
   void operator;
 
   const result = await listCategories(client);
@@ -515,9 +502,7 @@ export const getOperatorCategories = async ({
 export const createOperatorCategory = async (
   { client, logger, operator }: WithOperator,
   rawBody: unknown,
-): Promise<
-  HandlerResult<Category, OperatorServiceError, unknown>
-> => {
+): Promise<HandlerResult<Category, OperatorServiceError, unknown>> => {
   void operator;
 
   const payloadResult = parseCategoryPayload(rawBody);
@@ -536,7 +521,7 @@ export const createOperatorCategory = async (
       existingResult as ErrorResult<OperatorServiceError, unknown>;
 
     if (errorResult.status >= 500) {
-      logger.error("카테고리 중복 검사 실패", errorResult.error);
+      logger.error("Category duplicate check failed", errorResult.error);
     }
 
     return existingResult;
@@ -546,14 +531,13 @@ export const createOperatorCategory = async (
     return failure(
       409,
       operatorErrorCodes.metadataConflict,
-      "이미 존재하는 카테고리입니다.",
+      "Category already exists.",
     );
   }
 
   const createResult = await createCategory(client, {
     name: payloadResult.data.name,
-    isActive:
-      payloadResult.data.isActive ?? DEFAULT_CATEGORY_ACTIVE_STATE,
+    isActive: payloadResult.data.isActive ?? DEFAULT_CATEGORY_ACTIVE_STATE,
   });
 
   return createResult;
@@ -563,9 +547,7 @@ export const updateOperatorCategory = async (
   { client, logger, operator }: WithOperator,
   categoryId: string,
   rawBody: unknown,
-): Promise<
-  HandlerResult<Category, OperatorServiceError, unknown>
-> => {
+): Promise<HandlerResult<Category, OperatorServiceError, unknown>> => {
   void operator;
 
   const payloadResult = parseCategoryPayload(rawBody);
@@ -584,7 +566,7 @@ export const updateOperatorCategory = async (
       existingResult as ErrorResult<OperatorServiceError, unknown>;
 
     if (errorResult.status >= 500) {
-      logger.error("카테고리 중복 검사 실패", errorResult.error);
+      logger.error("Category duplicate check failed", errorResult.error);
     }
 
     return existingResult;
@@ -594,7 +576,7 @@ export const updateOperatorCategory = async (
     return failure(
       409,
       operatorErrorCodes.metadataConflict,
-      "동일한 이름의 카테고리가 이미 존재합니다.",
+      "Another category with the same name already exists.",
     );
   }
 
@@ -609,9 +591,7 @@ export const updateOperatorCategory = async (
 export const getOperatorDifficultyLevels = async ({
   client,
   operator,
-}: WithOperator): Promise<
-  HandlerResult<Difficulty[], OperatorServiceError, unknown>
-> => {
+}: WithOperator): Promise<HandlerResult<Difficulty[], OperatorServiceError, unknown>> => {
   void operator;
 
   return listDifficultyLevels(client);
@@ -620,9 +600,7 @@ export const getOperatorDifficultyLevels = async ({
 export const createOperatorDifficulty = async (
   { client, logger, operator }: WithOperator,
   rawBody: unknown,
-): Promise<
-  HandlerResult<Difficulty, OperatorServiceError, unknown>
-> => {
+): Promise<HandlerResult<Difficulty, OperatorServiceError, unknown>> => {
   void operator;
 
   const payloadResult = parseDifficultyPayload(rawBody);
@@ -641,7 +619,7 @@ export const createOperatorDifficulty = async (
       existingResult as ErrorResult<OperatorServiceError, unknown>;
 
     if (errorResult.status >= 500) {
-      logger.error("난이도 중복 검사 실패", errorResult.error);
+      logger.error("Difficulty duplicate check failed", errorResult.error);
     }
 
     return existingResult;
@@ -651,14 +629,13 @@ export const createOperatorDifficulty = async (
     return failure(
       409,
       operatorErrorCodes.metadataConflict,
-      "이미 존재하는 난이도입니다.",
+      "Difficulty label already exists.",
     );
   }
 
   return createDifficulty(client, {
     label: payloadResult.data.label,
-    isActive:
-      payloadResult.data.isActive ?? DEFAULT_DIFFICULTY_ACTIVE_STATE,
+    isActive: payloadResult.data.isActive ?? DEFAULT_DIFFICULTY_ACTIVE_STATE,
   });
 };
 
@@ -666,9 +643,7 @@ export const updateOperatorDifficulty = async (
   { client, logger, operator }: WithOperator,
   difficultyId: string,
   rawBody: unknown,
-): Promise<
-  HandlerResult<Difficulty, OperatorServiceError, unknown>
-> => {
+): Promise<HandlerResult<Difficulty, OperatorServiceError, unknown>> => {
   void operator;
 
   const payloadResult = parseDifficultyPayload(rawBody);
@@ -687,7 +662,7 @@ export const updateOperatorDifficulty = async (
       existingResult as ErrorResult<OperatorServiceError, unknown>;
 
     if (errorResult.status >= 500) {
-      logger.error("난이도 중복 검사 실패", errorResult.error);
+      logger.error("Difficulty duplicate check failed", errorResult.error);
     }
 
     return existingResult;
@@ -697,7 +672,7 @@ export const updateOperatorDifficulty = async (
     return failure(
       409,
       operatorErrorCodes.metadataConflict,
-      "동일한 이름의 난이도가 이미 존재합니다.",
+      "Another difficulty with the same label already exists.",
     );
   }
 

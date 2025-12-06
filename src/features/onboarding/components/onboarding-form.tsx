@@ -67,7 +67,7 @@ export const OnboardingForm = ({
       }
     } catch (error) {
       const fallbackMessage =
-        "온보딩 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+        "We ran into a problem completing onboarding. Please try again.";
       setServerError(error instanceof Error ? error.message : fallbackMessage);
     }
   });
@@ -80,9 +80,9 @@ export const OnboardingForm = ({
       >
         <section className="space-y-4">
           <header className="space-y-1">
-            <h2 className="text-xl font-semibold text-slate-900">역할을 선택하세요</h2>
+            <h2 className="text-xl font-semibold text-slate-900">Choose your role</h2>
             <p className="text-sm text-slate-500">
-              역할에 따라 제공되는 기능과 대시보드가 달라집니다.
+              Features and dashboards change based on your role.
             </p>
           </header>
           <FormField
@@ -118,11 +118,11 @@ export const OnboardingForm = ({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>이름</FormLabel>
+                <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
-                    placeholder="이름을 입력하세요"
+                    placeholder="Enter your name"
                     disabled={mutation.isPending}
                   />
                 </FormControl>
@@ -136,7 +136,7 @@ export const OnboardingForm = ({
             name="phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>휴대전화 번호</FormLabel>
+                <FormLabel>Mobile number</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -145,7 +145,7 @@ export const OnboardingForm = ({
                     disabled={mutation.isPending}
                   />
                 </FormControl>
-                <FormDescription>국제전화 형식(E.164)으로 입력하세요.</FormDescription>
+                <FormDescription>Use international (E.164) format.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -156,7 +156,7 @@ export const OnboardingForm = ({
             name="email"
             render={({ field }) => (
               <FormItem className="md:col-span-2">
-                <FormLabel>이메일</FormLabel>
+                <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -167,7 +167,7 @@ export const OnboardingForm = ({
                   />
                 </FormControl>
                 <FormDescription>
-                  가입 시 사용한 이메일로 계정을 연결합니다.
+                  We connect your account using the email you signed up with.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -189,10 +189,10 @@ export const OnboardingForm = ({
               </FormControl>
               <div className="space-y-1">
                 <FormLabel className="text-sm font-medium text-slate-800">
-                  서비스 이용 약관 및 개인정보 처리방침에 동의합니다.
+                  I agree to the Terms of Service and Privacy Policy.
                 </FormLabel>
                 <FormDescription>
-                  약관에 동의해야 학습자 또는 강사 기능을 이용할 수 있습니다.
+                  You must agree to use learner or instructor features.
                 </FormDescription>
                 <FormMessage />
               </div>
@@ -212,7 +212,7 @@ export const OnboardingForm = ({
           className="w-full"
           disabled={mutation.isPending}
         >
-          {mutation.isPending ? "제출 중..." : "계속하기"}
+          {mutation.isPending ? "Submitting..." : "Continue"}
         </Button>
       </form>
     </Form>

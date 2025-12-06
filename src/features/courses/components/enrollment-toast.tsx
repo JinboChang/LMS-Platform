@@ -8,21 +8,21 @@ export const useEnrollmentToast = () => {
 
   const showEnrollSuccess = useCallback((courseTitle: string) => {
     toast({
-      title: '수강 신청 완료',
-      description: `${courseTitle} 코스 수강 신청이 완료되었습니다.`,
+      title: 'Enrollment successful',
+      description: `Enrollment confirmed for ${courseTitle}.`,
     });
   }, [toast]);
 
   const showCancelSuccess = useCallback((courseTitle: string) => {
     toast({
-      title: '수강 취소 완료',
-      description: `${courseTitle} 코스 수강이 취소되었습니다.`,
+      title: 'Enrollment cancelled',
+      description: `Enrollment for ${courseTitle} has been cancelled.`,
     });
   }, [toast]);
 
   const showError = useCallback((message: string) => {
     toast({
-      title: '요청 실패',
+      title: 'Request failed',
       description: message,
       variant: 'destructive',
     });

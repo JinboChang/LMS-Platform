@@ -60,11 +60,11 @@ export const CourseDetailSheet = ({
 
   const actionLabel = isEnrolled
     ? cancelPending
-      ? '수강 취소 중...'
-      : '수강 취소'
+      ? 'Cancelling...'
+      : 'Cancel enrollment'
     : enrollPending
-      ? '수강 신청 중...'
-      : '수강 신청';
+      ? 'Enrolling...'
+      : 'Enroll now';
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -91,7 +91,7 @@ export const CourseDetailSheet = ({
                 <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
                   <span className="flex items-center gap-1">
                     <Users className="h-3.5 w-3.5" />
-                    {course.activeEnrollmentCount.toLocaleString()}명 수강 중
+                    {course.activeEnrollmentCount.toLocaleString()} enrolled
                   </span>
                   <span className="flex items-center gap-1">
                     <GraduationCap className="h-3.5 w-3.5" />
@@ -106,14 +106,14 @@ export const CourseDetailSheet = ({
             </SheetHeader>
 
             <section className="space-y-3">
-              <h2 className="text-sm font-semibold text-slate-700">코스 소개</h2>
+              <h2 className="text-sm font-semibold text-slate-700">Course overview</h2>
               <p className="text-sm leading-relaxed text-slate-600">
                 {course.description}
               </p>
             </section>
 
             <section className="space-y-3">
-              <h2 className="text-sm font-semibold text-slate-700">커리큘럼</h2>
+              <h2 className="text-sm font-semibold text-slate-700">Curriculum</h2>
               <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
                 <p className="whitespace-pre-line">{course.curriculum}</p>
               </div>
@@ -123,13 +123,13 @@ export const CourseDetailSheet = ({
 
             {!enrollmentGuard.isAuthenticated ? (
               <p className="rounded-lg bg-amber-50 p-3 text-xs text-amber-700">
-                로그인 후 수강 신청이 가능합니다.
+                Please sign in to enroll in this course.
               </p>
             ) : null}
 
             {enrollmentGuard.isAuthenticated && !enrollmentGuard.isLearner ? (
               <p className="rounded-lg bg-rose-50 p-3 text-xs text-rose-600">
-                학습자 역할만 코스를 수강할 수 있습니다.
+                Only learners can enroll in courses.
               </p>
             ) : null}
 
@@ -149,7 +149,7 @@ export const CourseDetailSheet = ({
           </div>
         ) : (
           <div className="flex min-h-[200px] items-center justify-center">
-            <p className="text-sm text-slate-500">코스를 선택해 상세 정보를 확인하세요.</p>
+            <p className="text-sm text-slate-500">Select a course to view details.</p>
           </div>
         )}
       </SheetContent>

@@ -114,7 +114,7 @@ export const AssignmentsPageShell = ({ courseId }: AssignmentsPageShellProps) =>
       setStatusDialogOpen(false);
       setStatusTarget(null);
     } catch {
-      // 오류 토스트는 훅에서 처리하므로 별도 처리 없음
+      // Error toast is handled inside the hook, so no extra handling is needed here.
     }
   };
 

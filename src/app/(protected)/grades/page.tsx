@@ -68,7 +68,7 @@ export default function GradesPage({ params }: GradesPageProps) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 text-muted-foreground">
         <Loader2 className="h-6 w-6 animate-spin" aria-hidden />
-        <p className="text-sm">성적 정보를 불러오는 중입니다.</p>
+        <p className="text-sm">Loading your grades...</p>
       </div>
     );
   }
@@ -78,13 +78,13 @@ export default function GradesPage({ params }: GradesPageProps) {
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center">
         <AlertTriangle className="h-8 w-8 text-destructive" aria-hidden />
         <div className="space-y-2">
-          <h1 className="text-lg font-semibold">성적을 확인하려면 온보딩이 필요합니다</h1>
+          <h1 className="text-lg font-semibold">Please complete onboarding to view grades</h1>
           <p className="text-sm text-muted-foreground">
-            {overviewError.message ?? "학습자 프로필을 완료한 뒤 다시 시도해 주세요."}
+            {overviewError.message ?? "Finish onboarding to access your grade dashboard."}
           </p>
         </div>
         <Button asChild>
-          <Link href="/onboarding">온보딩 진행하기</Link>
+          <Link href="/onboarding">Start onboarding</Link>
         </Button>
       </div>
     );
@@ -95,12 +95,12 @@ export default function GradesPage({ params }: GradesPageProps) {
       <div className="flex min-h-[60vh] flex-col items-center justify-center gap-4 text-center">
         <AlertTriangle className="h-8 w-8 text-destructive" aria-hidden />
         <div className="space-y-2">
-          <h1 className="text-lg font-semibold">성적 정보를 불러올 수 없습니다</h1>
+          <h1 className="text-lg font-semibold">Unable to load grades</h1>
           <p className="text-sm text-muted-foreground">
-            일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.
+            A temporary error occurred. Please try again.
           </p>
         </div>
-        <Button onClick={handleRetry}>다시 시도</Button>
+        <Button onClick={handleRetry}>Retry</Button>
       </div>
     );
   }
@@ -109,9 +109,9 @@ export default function GradesPage({ params }: GradesPageProps) {
     return (
       <div className="mx-auto flex max-w-5xl flex-col gap-8 px-6 py-12">
         <header className="space-y-4 text-center">
-          <h1 className="text-3xl font-semibold">성적 및 피드백</h1>
+          <h1 className="text-3xl font-semibold">Grade board</h1>
           <p className="text-sm text-muted-foreground">
-            수강 중인 강좌의 성적과 피드백이 이곳에 모여 표시됩니다.
+            Grade records for your active courses will appear here.
           </p>
         </header>
         <GradesEmptyState />
@@ -123,16 +123,16 @@ export default function GradesPage({ params }: GradesPageProps) {
     <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-12">
       <header className="grid gap-6 lg:grid-cols-[2fr,3fr]">
         <div className="space-y-3">
-          <h1 className="text-3xl font-semibold">성적 및 피드백</h1>
+          <h1 className="text-3xl font-semibold">Grade board</h1>
           <p className="text-sm text-muted-foreground">
-            수강 중인 강좌의 성적과 피드백을 한눈에 확인하고, 최신 피드백을 놓치지 마세요.
+            Review weighted scores, submission status, and feedback for each active course.
           </p>
           <GradesSummary overview={overview} />
         </div>
         <Card className="overflow-hidden">
           <Image
             src="https://picsum.photos/seed/grades-hero/960/540"
-            alt="학습 중인 학생"
+            alt="Student studying"
             className="h-full w-full object-cover"
             width={960}
             height={540}
@@ -143,9 +143,9 @@ export default function GradesPage({ params }: GradesPageProps) {
 
       <section className="space-y-4">
         <div className="flex flex-col gap-2">
-          <h2 className="text-xl font-semibold">강좌별 성적</h2>
+          <h2 className="text-xl font-semibold">Grades by course</h2>
           <p className="text-sm text-muted-foreground">
-            아래에서 관심 있는 강좌를 선택하면 과제별 상세 점수와 피드백을 확인할 수 있습니다.
+            Choose a course to review assignment scores, weights, and feedback.
           </p>
         </div>
         <div className="grid gap-3 md:grid-cols-2">
@@ -162,17 +162,17 @@ export default function GradesPage({ params }: GradesPageProps) {
               <div className="flex items-center justify-between gap-2">
                 <span className="text-base font-semibold">{course.courseTitle}</span>
                 <span className="text-xs text-muted-foreground">
-                  최근 피드백 {" "}
+                  Latest feedback{" "}
                   {course.latestFeedback
                     ? formatDateTime(course.latestFeedback.feedbackUpdatedAt)
-                    : "없음"}
+                    : "None yet"}
                 </span>
               </div>
               <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                <span>평균 {formatPercentage(course.weightedScore)}</span>
-                <span>채점 완료 {course.gradedCount}건</span>
-                <span>대기 {course.pendingFeedbackCount}건</span>
-                <span>지연 {course.lateSubmissionCount}건</span>
+                <span>Weighted score {formatPercentage(course.weightedScore)}</span>
+                <span>Graded {course.gradedCount}</span>
+                <span>Pending {course.pendingFeedbackCount}</span>
+                <span>Late {course.lateSubmissionCount}</span>
               </div>
             </button>
           ))}
@@ -182,32 +182,32 @@ export default function GradesPage({ params }: GradesPageProps) {
       <section className="space-y-4">
         <div className="flex flex-col gap-2">
           <h3 className="text-lg font-semibold">
-            {selectedCourse?.courseTitle ?? "강좌를 선택해 주세요"}
+            {selectedCourse?.courseTitle ?? "Select a course to view details"}
           </h3>
           {courseError ? (
             <div className="flex items-center gap-2 rounded-md border border-destructive/40 bg-destructive/5 px-4 py-2 text-sm text-destructive">
               <AlertTriangle className="h-4 w-4" aria-hidden />
               <span>{courseError.message}</span>
               <Button variant="ghost" size="sm" onClick={() => void refetchCourse()}>
-                다시 시도
+                Retry
               </Button>
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">
-              과제별 점수, 비율, 제출 현황, 피드백 내용을 자세히 확인할 수 있습니다.
+              View assignment scores, weights, submission status, and detailed feedback.
             </p>
           )}
         </div>
         {courseLoading ? (
           <div className="flex items-center gap-2 rounded-md border border-dashed border-muted-foreground/50 px-4 py-6 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            데이터를 불러오는 중입니다.
+            Loading course details...
           </div>
         ) : courseGrades ? (
           <CourseGradeTable assignments={courseGrades.assignments} />
         ) : (
           <div className="rounded-md border border-dashed border-muted-foreground/50 px-4 py-6 text-sm text-muted-foreground">
-            강좌를 선택하면 과제별 성적을 확인할 수 있습니다.
+            Select a course to see grade details.
           </div>
         )}
       </section>

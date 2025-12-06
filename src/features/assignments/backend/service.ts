@@ -67,7 +67,7 @@ if (!assignmentResult.ok) {
     return failure(
       403,
       assignmentErrorCodes.assignmentNotAccessible,
-      '게시되지 않은 과제입니다.',
+      'This assignment is not published.',
     );
   }
 
@@ -77,7 +77,7 @@ if (!assignmentResult.ok) {
     return failure(
       500,
       assignmentErrorCodes.validationError,
-      '과제 마감일을 파싱할 수 없습니다.',
+      'Unable to parse assignment due date.',
     );
   }
 
@@ -87,7 +87,7 @@ if (!assignmentResult.ok) {
     return failure(
       500,
       assignmentErrorCodes.validationError,
-      '과제 점수 비중이 올바르지 않습니다.',
+      'Assignment score weight is invalid.',
     );
   }
 
@@ -140,7 +140,7 @@ if (!submissionResult.ok) {
     return failure(
       500,
       assignmentErrorCodes.validationError,
-      '제출물 점수 형식이 올바르지 않습니다.',
+      'Submission score format is invalid.',
     );
   }
 
@@ -168,7 +168,7 @@ if (!submissionResult.ok) {
     return failure(
       500,
       assignmentErrorCodes.validationError,
-      '과제 상세 응답이 유효하지 않습니다.',
+      'Assignment detail response is invalid.',
       parsedResponse.error.format(),
     );
   }

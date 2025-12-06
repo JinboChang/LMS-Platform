@@ -17,9 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
-import {
-  useOperatorCategories,
-} from "@/features/operator/hooks/useCategories";
+import { useOperatorCategories } from "@/features/operator/hooks/useCategories";
 import { useOperatorDifficultyLevels } from "@/features/operator/hooks/useDifficultyLevels";
 import type {
   OperatorCategory,
@@ -44,7 +42,7 @@ const defaultDifficultyValues: OperatorDifficultyFormValues = {
 
 const renderActiveBadge = (isActive: boolean) => (
   <Badge variant={isActive ? "default" : "outline"}>
-    {isActive ? "활성" : "비활성"}
+    {isActive ? "Active" : "Inactive"}
   </Badge>
 );
 
@@ -159,9 +157,9 @@ export const MetadataEditor = () => {
     <div className="grid gap-6 lg:grid-cols-2">
       <Card className="flex flex-col gap-4 p-6">
         <div className="space-y-1">
-          <h3 className="text-lg font-semibold">코스 카테고리</h3>
+          <h3 className="text-lg font-semibold">Course categories</h3>
           <p className="text-sm text-muted-foreground">
-            운영 중인 코스를 분류하는 카테고리를 관리합니다.
+            Manage categories used across courses and reports.
           </p>
         </div>
 
@@ -175,9 +173,9 @@ export const MetadataEditor = () => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>카테고리명</FormLabel>
+                  <FormLabel>Category name</FormLabel>
                   <FormControl>
-                    <Input placeholder="예: Computer Science" {...field} />
+                    <Input placeholder="e.g., Computer Science" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -195,16 +193,16 @@ export const MetadataEditor = () => {
                     />
                   </FormControl>
                   <div className="space-y-1">
-                    <FormLabel className="text-sm">활성 상태</FormLabel>
+                    <FormLabel className="text-sm">Active status</FormLabel>
                     <p className="text-xs text-muted-foreground">
-                      비활성화 시 신규 코스 생성에서 선택할 수 없습니다.
+                      Inactive categories remain hidden from course and report filters.
                     </p>
                   </div>
                 </FormItem>
               )}
             />
             <Button type="submit" disabled={createCategory.isPending}>
-              {createCategory.isPending ? "등록 중..." : "카테고리 추가"}
+              {createCategory.isPending ? "Saving..." : "Add category"}
             </Button>
           </form>
         </Form>
@@ -212,18 +210,18 @@ export const MetadataEditor = () => {
         <Separator />
 
         <div className="space-y-3">
-          <h4 className="text-sm font-semibold">등록된 카테고리</h4>
+          <h4 className="text-sm font-semibold">Categories</h4>
           <div className="flex flex-col gap-3">
             {categoriesQuery.isLoading ? (
-              <p className="text-sm text-muted-foreground">카테고리를 불러오는 중입니다.</p>
+              <p className="text-sm text-muted-foreground">Loading categories...</p>
             ) : null}
             {categoriesQuery.isError ? (
               <p className="text-sm text-destructive">
-                데이터를 불러오는 중 오류가 발생했습니다.
+                Failed to load categories.
               </p>
             ) : null}
             {categoriesQuery.isSuccess && categoriesQuery.data.length === 0 ? (
-              <p className="text-sm text-muted-foreground">등록된 카테고리가 없습니다.</p>
+              <p className="text-sm text-muted-foreground">No categories added yet.</p>
             ) : null}
 
             {categoriesQuery.isSuccess
@@ -235,25 +233,23 @@ export const MetadataEditor = () => {
                     <div className="space-y-1">
                       <div className="flex items-center gap-3">
                         <span className="text-sm font-medium text-foreground">
-                          {category.id === editingCategory?.id
-                            ? (
-                                <Input
-                                  value={editingCategory.name}
-                                  onChange={(event) =>
-                                    setEditingCategory((prev) =>
-                                      prev
-                                        ? { ...prev, name: event.target.value }
-                                        : prev,
-                                    )
-                                  }
-                                />
-                              )
-                            : category.name}
+                          {category.id === editingCategory?.id ? (
+                            <Input
+                              value={editingCategory.name}
+                              onChange={(event) =>
+                                setEditingCategory((prev) =>
+                                  prev ? { ...prev, name: event.target.value } : prev,
+                                )
+                              }
+                            />
+                          ) : (
+                            category.name
+                          )}
                         </span>
                         {renderActiveBadge(category.isActive)}
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        마지막 업데이트 {formatDateFromString(category.updatedAt)}
+                        Updated {formatDateFromString(category.updatedAt)}
                       </p>
                     </div>
 
@@ -266,14 +262,14 @@ export const MetadataEditor = () => {
                             onClick={saveCategoryRename}
                             disabled={updateCategory.isPending}
                           >
-                            저장
+                            Save
                           </Button>
                           <Button
                             size="sm"
                             variant="ghost"
                             onClick={() => setEditingCategory(null)}
                           >
-                            취소
+                            Cancel
                           </Button>
                         </>
                       ) : (
@@ -283,14 +279,14 @@ export const MetadataEditor = () => {
                             variant="outline"
                             onClick={() => handleRenameCategory(category)}
                           >
-                            이름 수정
+                            Rename
                           </Button>
                           <Button
                             size="sm"
                             variant="ghost"
                             onClick={() => toggleCategoryActive(category)}
                           >
-                            {category.isActive ? "비활성화" : "활성화"}
+                            {category.isActive ? "Deactivate" : "Activate"}
                           </Button>
                         </>
                       )}
@@ -304,9 +300,9 @@ export const MetadataEditor = () => {
 
       <Card className="flex flex-col gap-4 p-6">
         <div className="space-y-1">
-          <h3 className="text-lg font-semibold">코스 난이도</h3>
+          <h3 className="text-lg font-semibold">Course difficulty</h3>
           <p className="text-sm text-muted-foreground">
-            학습자에게 노출되는 난이도 레이블을 관리합니다.
+            Manage difficulty labels that appear on courses and reports.
           </p>
         </div>
 
@@ -320,9 +316,9 @@ export const MetadataEditor = () => {
               name="label"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>난이도명</FormLabel>
+                  <FormLabel>Difficulty label</FormLabel>
                   <FormControl>
-                    <Input placeholder="예: Beginner" {...field} />
+                    <Input placeholder="e.g., Beginner" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -340,16 +336,16 @@ export const MetadataEditor = () => {
                     />
                   </FormControl>
                   <div className="space-y-1">
-                    <FormLabel className="text-sm">활성 상태</FormLabel>
+                    <FormLabel className="text-sm">Active status</FormLabel>
                     <p className="text-xs text-muted-foreground">
-                      비활성화 시 코스 생성/수정 화면에서 선택할 수 없습니다.
+                      Inactive difficulties are hidden from course settings and filters.
                     </p>
                   </div>
                 </FormItem>
               )}
             />
             <Button type="submit" disabled={createDifficulty.isPending}>
-              {createDifficulty.isPending ? "등록 중..." : "난이도 추가"}
+              {createDifficulty.isPending ? "Saving..." : "Add difficulty"}
             </Button>
           </form>
         </Form>
@@ -357,18 +353,18 @@ export const MetadataEditor = () => {
         <Separator />
 
         <div className="space-y-3">
-          <h4 className="text-sm font-semibold">등록된 난이도</h4>
+          <h4 className="text-sm font-semibold">Difficulties</h4>
           <div className="flex flex-col gap-3">
             {difficultyQuery.isLoading ? (
-              <p className="text-sm text-muted-foreground">난이도를 불러오는 중입니다.</p>
+              <p className="text-sm text-muted-foreground">Loading difficulties...</p>
             ) : null}
             {difficultyQuery.isError ? (
               <p className="text-sm text-destructive">
-                데이터를 불러오는 중 오류가 발생했습니다.
+                Failed to load difficulties.
               </p>
             ) : null}
             {difficultyQuery.isSuccess && difficultyQuery.data.length === 0 ? (
-              <p className="text-sm text-muted-foreground">등록된 난이도가 없습니다.</p>
+              <p className="text-sm text-muted-foreground">No difficulties added yet.</p>
             ) : null}
 
             {difficultyQuery.isSuccess
@@ -380,25 +376,23 @@ export const MetadataEditor = () => {
                     <div className="space-y-1">
                       <div className="flex items-center gap-3">
                         <span className="text-sm font-medium text-foreground">
-                          {difficulty.id === editingDifficulty?.id
-                            ? (
-                                <Input
-                                  value={editingDifficulty.label}
-                                  onChange={(event) =>
-                                    setEditingDifficulty((prev) =>
-                                      prev
-                                        ? { ...prev, label: event.target.value }
-                                        : prev,
-                                    )
-                                  }
-                                />
-                              )
-                            : difficulty.label}
+                          {difficulty.id === editingDifficulty?.id ? (
+                            <Input
+                              value={editingDifficulty.label}
+                              onChange={(event) =>
+                                setEditingDifficulty((prev) =>
+                                  prev ? { ...prev, label: event.target.value } : prev,
+                                )
+                              }
+                            />
+                          ) : (
+                            difficulty.label
+                          )}
                         </span>
                         {renderActiveBadge(difficulty.isActive)}
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        마지막 업데이트 {formatDateFromString(difficulty.updatedAt)}
+                        Updated {formatDateFromString(difficulty.updatedAt)}
                       </p>
                     </div>
 
@@ -411,14 +405,14 @@ export const MetadataEditor = () => {
                             onClick={saveDifficultyRename}
                             disabled={updateDifficulty.isPending}
                           >
-                            저장
+                            Save
                           </Button>
                           <Button
                             size="sm"
                             variant="ghost"
                             onClick={() => setEditingDifficulty(null)}
                           >
-                            취소
+                            Cancel
                           </Button>
                         </>
                       ) : (
@@ -428,14 +422,14 @@ export const MetadataEditor = () => {
                             variant="outline"
                             onClick={() => handleRenameDifficulty(difficulty)}
                           >
-                            이름 수정
+                            Rename
                           </Button>
                           <Button
                             size="sm"
                             variant="ghost"
                             onClick={() => toggleDifficultyActive(difficulty)}
                           >
-                            {difficulty.isActive ? "비활성화" : "활성화"}
+                            {difficulty.isActive ? "Deactivate" : "Activate"}
                           </Button>
                         </>
                       )}
@@ -459,4 +453,3 @@ const formatDateFromString = (value: string) => {
 
   return date.toLocaleDateString();
 };
-

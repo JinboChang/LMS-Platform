@@ -23,7 +23,7 @@ const fetchDifficultyLevels = async (): Promise<OperatorDifficulty[]> => {
   } catch (error) {
     const message = extractApiErrorMessage(
       error,
-      "난이도 정보를 불러오지 못했습니다.",
+      "Failed to load difficulty levels.",
     );
     throw new Error(message);
   }
@@ -44,7 +44,7 @@ const createDifficultyRequest = async (
   } catch (error) {
     const message = extractApiErrorMessage(
       error,
-      "난이도를 생성하지 못했습니다.",
+      "Failed to create difficulty level.",
     );
     throw new Error(message);
   }
@@ -66,7 +66,7 @@ const updateDifficultyRequest = async (
   } catch (error) {
     const message = extractApiErrorMessage(
       error,
-      "난이도를 수정하지 못했습니다.",
+      "Failed to update difficulty level.",
     );
     throw new Error(message);
   }
@@ -106,4 +106,3 @@ export const useOperatorDifficultyLevels = () => {
     updateDifficulty: updateMutation,
   };
 };
-

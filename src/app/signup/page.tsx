@@ -27,7 +27,7 @@ export default function SignupPage({ params }: SignupPageProps) {
   void params;
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { isAuthenticated, refresh, user } = useCurrentUser();
+  const { refresh, isAuthenticated, user } = useCurrentUser();
   const resolvedRole = useMemo(() => {
     const rawRole = user?.userMetadata?.role ?? user?.appMetadata?.role;
 
@@ -39,18 +39,24 @@ export default function SignupPage({ params }: SignupPageProps) {
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      const redirectedFrom = searchParams.get("redirectedFrom") ?? "/";
-
-      if (!resolvedRole) {
-        router.replace(
-          `/onboarding?redirectedFrom=${encodeURIComponent(redirectedFrom)}`
-        );
-        return;
-      }
-
-      router.replace(redirectedFrom);
+    if (!isAuthenticated) {
+      return;
     }
+
+    const redirectedFrom = searchParams.get("redirectedFrom");
+    const defaultPath = resolvedRole === "instructor" ? "/instructor/dashboard" : "/courses";
+    const shouldUseRedirectedFrom = redirectedFrom && redirectedFrom !== "/" && redirectedFrom !== "";
+    const targetPath = shouldUseRedirectedFrom ? redirectedFrom : defaultPath;
+
+    if (!resolvedRole) {
+      const fallback = shouldUseRedirectedFrom ? redirectedFrom : defaultPath;
+      router.replace(
+        `/onboarding?redirectedFrom=${encodeURIComponent(fallback)}`
+      );
+      return;
+    }
+
+    router.replace(targetPath);
   }, [isAuthenticated, resolvedRole, router, searchParams]);
 
   const isSubmitDisabled = useMemo(
@@ -64,7 +70,7 @@ export default function SignupPage({ params }: SignupPageProps) {
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = event.target;
-      setFormState((previous) => ({ ...previous, [name]: value }));
+      setFormState((prev) => ({ ...prev, [name]: value }));
     },
     []
   );
@@ -77,7 +83,7 @@ export default function SignupPage({ params }: SignupPageProps) {
       setInfoMessage(null);
 
       if (formState.password !== formState.confirmPassword) {
-        setErrorMessage("비밀번호가 일치하지 않습니다.");
+        setErrorMessage("Password confirmation does not match.");
         setIsSubmitting(false);
         return;
       }
@@ -91,7 +97,7 @@ export default function SignupPage({ params }: SignupPageProps) {
         });
 
         if (result.error) {
-          setErrorMessage(result.error.message ?? "회원가입에 실패했습니다.");
+          setErrorMessage(result.error.message ?? "Unable to sign up.");
           setIsSubmitting(false);
           return;
         }
@@ -109,18 +115,25 @@ export default function SignupPage({ params }: SignupPageProps) {
         }
 
         setInfoMessage(
-          "확인 이메일을 보냈습니다. 이메일 인증 후 로그인해 주세요."
+          "Check your email to confirm your account, then continue to onboarding."
         );
         router.prefetch("/login");
         router.prefetch(onboardingPath);
         setFormState(defaultFormState);
       } catch (error) {
-        setErrorMessage("회원가입 처리 중 문제가 발생했습니다.");
+        setErrorMessage("Unable to sign up. Please try again.");
       } finally {
         setIsSubmitting(false);
       }
     },
-    [formState.confirmPassword, formState.email, formState.password, refresh, router, searchParams]
+    [
+      formState.confirmPassword,
+      formState.email,
+      formState.password,
+      refresh,
+      router,
+      searchParams,
+    ]
   );
 
   if (isAuthenticated) {
@@ -130,9 +143,9 @@ export default function SignupPage({ params }: SignupPageProps) {
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-4xl flex-col items-center justify-center gap-10 px-6 py-16">
       <header className="flex flex-col items-center gap-3 text-center">
-        <h1 className="text-3xl font-semibold">회원가입</h1>
+        <h1 className="text-3xl font-semibold">Create an account</h1>
         <p className="text-slate-500">
-          Supabase 계정으로 회원가입하고 프로젝트를 시작하세요.
+          Sign up with Supabase and finish onboarding to start learning.
         </p>
       </header>
       <div className="grid w-full gap-8 md:grid-cols-2">
@@ -141,7 +154,7 @@ export default function SignupPage({ params }: SignupPageProps) {
           className="flex flex-col gap-4 rounded-xl border border-slate-200 p-6 shadow-sm"
         >
           <label className="flex flex-col gap-2 text-sm text-slate-700">
-            이메일
+            Email
             <input
               type="email"
               name="email"
@@ -153,7 +166,7 @@ export default function SignupPage({ params }: SignupPageProps) {
             />
           </label>
           <label className="flex flex-col gap-2 text-sm text-slate-700">
-            비밀번호
+            Password
             <input
               type="password"
               name="password"
@@ -165,7 +178,7 @@ export default function SignupPage({ params }: SignupPageProps) {
             />
           </label>
           <label className="flex flex-col gap-2 text-sm text-slate-700">
-            비밀번호 확인
+            Confirm password
             <input
               type="password"
               name="confirmPassword"
@@ -187,22 +200,22 @@ export default function SignupPage({ params }: SignupPageProps) {
             disabled={isSubmitting || isSubmitDisabled}
             className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-400"
           >
-            {isSubmitting ? "등록 중" : "회원가입"}
+            {isSubmitting ? "Creating..." : "Create account"}
           </button>
           <p className="text-xs text-slate-500">
-            이미 계정이 있으신가요?{" "}
+            Already have an account?{" "}
             <Link
               href="/login"
               className="font-medium text-slate-700 underline hover:text-slate-900"
             >
-              로그인으로 이동
+              Log in
             </Link>
           </p>
         </form>
         <figure className="overflow-hidden rounded-xl border border-slate-200">
           <Image
             src="https://picsum.photos/seed/signup/640/640"
-            alt="회원가입"
+            alt="Signup illustration"
             width={640}
             height={640}
             className="h-full w-full object-cover"

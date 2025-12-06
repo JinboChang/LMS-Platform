@@ -7,23 +7,23 @@ const e164RegExp = /^\+[1-9]\d{1,14}$/;
 export const OnboardingRequestSchema = z
   .object({
     email: z
-      .string({ required_error: "이메일을 입력해 주세요." })
+      .string({ required_error: "Please enter your email." })
       .trim()
-      .min(1, "이메일을 입력해 주세요.")
-      .email("유효한 이메일 주소가 아닙니다."),
+      .min(1, "Please enter your email.")
+      .email("Email address is invalid."),
     name: z
-      .string({ required_error: "이름을 입력해 주세요." })
+      .string({ required_error: "Please enter your name." })
       .trim()
-      .min(1, "이름을 입력해 주세요."),
+      .min(1, "Please enter your name."),
     phoneNumber: z
-      .string({ required_error: "휴대전화 번호를 입력해 주세요." })
+      .string({ required_error: "Please enter your mobile number." })
       .trim()
-      .regex(e164RegExp, "국제전화 형식(E.164)으로 입력해 주세요. 예: +821012345678"),
+      .regex(e164RegExp, "Use international format (E.164). Example: +821012345678"),
     role: z.enum(onboardingRoles, {
-      errorMap: () => ({ message: "올바른 역할을 선택해 주세요." }),
+      errorMap: () => ({ message: "Please select a valid role." }),
     }),
     acceptedTerms: z.literal(true, {
-      errorMap: () => ({ message: "약관에 동의해 주세요." }),
+      errorMap: () => ({ message: "Please agree to the terms." }),
     }),
   })
   .strict();

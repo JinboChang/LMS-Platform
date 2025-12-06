@@ -112,13 +112,13 @@ export const AssignmentSubmitForm = ({
             name="submissionText"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>제출 본문</FormLabel>
+                <FormLabel>Submission text</FormLabel>
                 <FormControl>
                   <Textarea
                     {...field}
                     rows={8}
                     className="min-h-[160px] resize-y bg-white text-slate-900"
-                    placeholder="과제 답안을 작성해주세요."
+                    placeholder="Write your answer here."
                     disabled={disabled || isSubmitting}
                   />
                 </FormControl>
@@ -132,7 +132,7 @@ export const AssignmentSubmitForm = ({
             name="submissionLink"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>참고 링크 (선택)</FormLabel>
+                <FormLabel>Reference link (optional)</FormLabel>
                 <FormControl>
                   <Input
                     {...field}
@@ -154,7 +154,7 @@ export const AssignmentSubmitForm = ({
               className="w-full"
               disabled={disabled || isSubmitting}
             >
-              {isSubmitting ? "제출 중..." : actionLabel}
+              {isSubmitting ? "Submitting..." : actionLabel}
             </Button>
             <p
               className={

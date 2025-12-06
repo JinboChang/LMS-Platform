@@ -118,7 +118,7 @@ export const registerGradeRoutes = (app: Hono<AppEnv>) => {
         failure(
           400,
           gradesErrorCodes.invalidQuery,
-          "강의별 성적 조회 요청이 올바르지 않습니다.",
+          "Course grade request is invalid.",
           params.error.format(),
         ),
       );

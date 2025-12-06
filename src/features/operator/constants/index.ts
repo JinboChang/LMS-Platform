@@ -21,27 +21,27 @@ export const REPORT_STATUS_LABELS: Record<
   (typeof REPORT_STATUSES)[number],
   string
 > = {
-  received: "접수됨",
-  investigating: "조사 중",
-  resolved: "처리 완료",
+  received: "Received",
+  investigating: "Investigating",
+  resolved: "Resolved",
 };
 
 export const REPORT_ACTION_LABELS: Record<
   (typeof REPORT_ACTION_TYPES)[number],
   string
 > = {
-  warning: "경고",
-  submission_invalidation: "제출 무효화",
-  account_suspension: "계정 제한",
+  warning: "Warning",
+  submission_invalidation: "Submission invalidated",
+  account_suspension: "Account suspended",
 };
 
 export const REPORT_TARGET_LABELS: Record<
   (typeof REPORT_TARGET_TYPES)[number],
   string
 > = {
-  course: "코스",
-  assignment: "과제",
-  submission: "제출물",
+  course: "Course",
+  assignment: "Assignment",
+  submission: "Submission",
 };
 
 export const TABLE_NAMES = {

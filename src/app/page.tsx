@@ -11,7 +11,6 @@ import {
   Compass,
   GraduationCap,
   Heart,
-  Layers,
   LineChart,
   Rocket,
   Shield,
@@ -50,26 +49,26 @@ type StoryCard = {
 
 const showcaseCards: ShowcaseCard[] = [
   {
-    title: "학습 관리의 시작, 맞춤형 대시보드",
+    title: "Stay ahead with a focused dashboard",
     description:
-      "오늘 학습해야 할 콘텐츠, 지난 학습 기록, 남은 과제를 한 화면에서 확인하세요.",
-    action: "대시보드 미리 보기",
+      "See today's required content, assignment history, and the next actions you should take to stay on track.",
+    action: "Preview dashboard",
     href: "/dashboard",
     icon: <Rocket className="h-6 w-6 text-sky-300" />,
   },
   {
-    title: "교수자를 위한 강의 제작 스튜디오",
+    title: "Instructor studio for building courses",
     description:
-      "강의 개설부터 과제 배포, 채점까지 단계별 안내와 자동화 도구가 함께합니다.",
-    action: "강의 스튜디오 가기",
+      "Design your outline, publish assignments, grade quickly, and keep everything organized in one place.",
+    action: "Open course studio",
     href: "/instructor/courses",
     icon: <GraduationCap className="h-6 w-6 text-indigo-300" />,
   },
   {
-    title: "운영팀을 위한 신고·지원 센터",
+    title: "Operations hub with alerts and SLAs",
     description:
-      "학습자 문의와 신고가 들어오면 SLA에 맞춰 자동으로 우선순위를 지정해 드립니다.",
-    action: "운영 콘솔 열기",
+      "Triage questions and incidents with guided workflows so you never miss a response target or service level.",
+    action: "Open operator console",
     href: "/operator",
     icon: <Shield className="h-6 w-6 text-emerald-300" />,
   },
@@ -78,83 +77,83 @@ const showcaseCards: ShowcaseCard[] = [
 const steps: StepCard[] = [
   {
     step: "01",
-    heading: "회원가입하고 역할 선택하기",
+    heading: "Choose your role and finish onboarding",
     detail:
-      "학습자·교수자·운영자 중 나에게 맞는 역할을 선택하면 첫 화면이 달라집니다.",
+      "Pick learner, instructor, or operator so we can tailor the setup and routes for you.",
   },
   {
     step: "02",
-    heading: "맞춤형 대시보드 살펴보기",
+    heading: "Review what's waiting for you",
     detail:
-      "오늘 해야 할 일, 놓치고 있던 과제, 최근 알림을 한눈에 확인해 보세요.",
+      "See today's required lessons, open assignments, and recent updates at a glance.",
   },
   {
     step: "03",
-    heading: "콘텐츠와 과제로 성장 이어가기",
+    heading: "Plan courses and assignments together",
     detail:
-      "강의, 라이브 세션, 과제를 통해 학습을 이어가고, 피드백을 즉시 받아보세요.",
+      "Build courses, sessions, and assignments as one flow so progress stays clear for everyone.",
   },
 ];
 
 const learnerBenefits: BenefitCard[] = [
   {
-    title: "나만을 위한 학습 체크리스트",
-    body: "로그인하면 오늘 해야 할 일과 다음 마감일이 자동으로 정리됩니다.",
+    title: "Clear progress tracking",
+    body: "Log in to see all courses, remaining tasks, and deadlines update in real time.",
   },
   {
-    title: "성장 그래프와 목표 달성률",
-    body: "진행률·점수·피드백을 그래프로 보여 주어 나의 속도를 점검할 수 있어요.",
-    metric: "진행률 달성도 80% 이상 학습자 비율 ↑",
+    title: "Goals that stay on schedule",
+    body: "Progress, grades, and feedback show the next best action to keep you moving.",
+    metric: "Cohorts report 80%+ completion when tracked here",
   },
   {
-    title: "실시간 질문과 소통 지원",
-    body: "라이브 힌트, 토론, 신고 기능으로 언제든 도움을 요청할 수 있습니다.",
+    title: "Connected questions and support",
+    body: "Chat, Q&A, and notifications help you get answers fast without leaving the page.",
   },
 ];
 
 const stories: StoryCard[] = [
   {
     quote:
-      "오늘 해야 할 일이 대시보드에 정리돼 있어서 마음이 편해졌어요. 과제도 제때 제출하게 됐습니다.",
-    name: "박소연",
-    role: "직장인 학습자",
+      "The daily checklist keeps me on time, and assignments are organized so I never wonder what to do next.",
+    name: "Soo Park",
+    role: "Learner",
   },
   {
     quote:
-      "강의 자료와 과제 흐름을 한 번에 만들 수 있어 수업 준비 시간이 많이 줄었어요.",
-    name: "김도윤",
-    role: "교수자",
+      "Building courses and tracking submissions take minutes now, freeing up hours for teaching.",
+    name: "Hyun Kim",
+    role: "Instructor",
   },
   {
     quote:
-      "문의와 신고가 들어오면 우선순위가 자동으로 정리돼 운영팀이 더 빠르게 대응하고 있습니다.",
-    name: "정민재",
-    role: "운영 리더",
+      "Our support inbox finally runs on clear timelines, and SLAs are easy to hit with guided workflows.",
+    name: "Mina Choi",
+    role: "Operations Lead",
   },
 ];
 
 const gettingReady: ShowcaseCard[] = [
   {
-    title: "빠른 온보딩 가이드",
+    title: "Fast onboarding guide",
     description:
-      "처음 방문했다면 온보딩 체크리스트에서 필수 기능을 순서대로 안내받으세요.",
-    action: "온보딩 시작",
+      "Follow the onboarding checklist and you can finish setup in minutes without extra meetings.",
+    action: "Start onboarding",
     href: "/onboarding",
     icon: <Compass className="h-6 w-6 text-slate-200" />,
   },
   {
-    title: "커리큘럼 둘러보기",
+    title: "Browse the curriculum",
     description:
-      "강의, 워크숍, 과제 일정이 어떻게 구성돼 있는지 미리 확인할 수 있어요.",
-    action: "강의 목록 보기",
+      "Explore courses, tracks, and assignments to see what you'll learn before you enroll.",
+    action: "View courses",
     href: "/courses",
     icon: <BookOpen className="h-6 w-6 text-slate-200" />,
   },
   {
-    title: "학습 여정 카드 소개",
+    title: "Personalized progress cards",
     description:
-      "진행률, 히스토리, 추천 콘텐츠 등 학습 여정을 추적하는 카드를 살펴보세요.",
-    action: "대시보드 살펴보기",
+      "See progress, recommendations, and tasks in one place so you can start right away.",
+    action: "View my dashboard",
     href: "/dashboard",
     icon: <LineChart className="h-6 w-6 text-slate-200" />,
   },
@@ -212,7 +211,7 @@ function Header({
         </span>
         <div>
           <p className="text-lg font-semibold text-slate-100">
-            여러분의 학습 플랫폼
+            Your learning workspace
           </p>
           <p className="text-xs uppercase tracking-[0.3em] text-slate-400">
             learn · connect · grow
@@ -224,17 +223,17 @@ function Header({
           href="/courses"
           className="rounded-full border border-slate-700 px-3 py-1 text-slate-200 transition hover:border-slate-500 hover:bg-slate-900/70"
         >
-          강의 둘러보기
+          Browse courses
         </Link>
         <Link
           href="/example"
           className="rounded-full border border-slate-700 px-3 py-1 text-slate-200 transition hover:border-slate-500 hover:bg-slate-900/70"
         >
-          기능 미리 보기
+          View example
         </Link>
         {isLoading ? (
           <span className="rounded-full border border-slate-700 px-3 py-1 text-slate-400">
-            로그인 상태 확인 중...
+            Checking login...
           </span>
         ) : isAuthenticated ? (
           <>
@@ -245,7 +244,7 @@ function Header({
               href="/dashboard"
               className="inline-flex items-center gap-1 rounded-full border border-slate-600 px-3 py-1 text-slate-100 transition hover:border-slate-400 hover:bg-slate-900/60"
             >
-              나의 대시보드
+              Go to dashboard
               <ArrowRight className="h-4 w-4" />
             </Link>
             <button
@@ -253,7 +252,7 @@ function Header({
               onClick={onSignOut}
               className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-slate-900 transition hover:bg-slate-50"
             >
-              로그아웃
+              Log out
             </button>
           </>
         ) : (
@@ -262,13 +261,13 @@ function Header({
               href="/login"
               className="rounded-full border border-slate-700 px-3 py-1 text-slate-200 transition hover:border-slate-500 hover:bg-slate-900/70"
             >
-              로그인
+              Log in
             </Link>
             <Link
               href="/signup"
               className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-indigo-500 via-sky-500 to-emerald-400 px-4 py-1 font-medium text-slate-950 shadow-lg shadow-sky-400/40 transition hover:from-indigo-400 hover:via-sky-400 hover:to-emerald-300"
             >
-              무료로 시작하기
+              Start free
               <ArrowRight className="h-4 w-4" />
             </Link>
           </>
@@ -284,19 +283,18 @@ function Hero({ isAuthenticated }: { isAuthenticated: boolean }) {
       <div className="space-y-8">
         <span className="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/70 px-4 py-1 text-xs uppercase tracking-[0.3em] text-slate-300">
           <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-          당신의 학습이 한 곳에서 시작되는 곳
+          New paths for every learner, instructor, and operator
         </span>
         <div className="space-y-6">
           <h1 className="text-4xl font-semibold leading-tight tracking-tight text-slate-100 sm:text-5xl lg:text-[3.3rem]">
-            오늘 해야 할 일과
+            Build courses, ship assignments,
             <span className="ml-2 inline bg-gradient-to-r from-indigo-400 via-sky-400 to-emerald-300 bg-clip-text text-transparent">
-              나만의 성장 경로
+              and grow together
             </span>
-            를 한 번에 보세요.
+            — starting today
           </h1>
           <p className="text-lg text-slate-300">
-            이 플랫폼은 학습자에게는 명확한 체크리스트를, 교수자에게는 쉽고 빠른 강의 구성 도구를,
-            운영팀에게는 안정적인 지원 시스템을 제공합니다.
+            Learners get a clear checklist, instructors get streamlined course creation, and operators keep service on time. Everyone knows what to do next without digging through different tools.
           </p>
         </div>
         <div className="flex flex-col gap-4 sm:flex-row">
@@ -304,20 +302,20 @@ function Hero({ isAuthenticated }: { isAuthenticated: boolean }) {
             href={isAuthenticated ? "/dashboard" : "/signup"}
             className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-indigo-500 via-blue-500 to-cyan-400 px-6 py-3 text-base font-medium text-slate-950 shadow-xl shadow-blue-500/30 transition hover:from-indigo-400 hover:via-blue-400 hover:to-cyan-300"
           >
-            {isAuthenticated ? "대시보드 열기" : "무료 체험 시작"}
+            {isAuthenticated ? "Open dashboard" : "Start for free"}
             <ArrowRight className="h-5 w-5" />
           </Link>
           <Link
             href="/courses"
             className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-700 px-6 py-3 text-base text-slate-200 transition hover:border-slate-500 hover:bg-slate-900/70"
           >
-            강의 목록 보기
+            Explore courses
           </Link>
         </div>
         <div className="flex flex-col gap-4 text-sm text-slate-400 sm:flex-row">
-          <BadgeLine icon={CheckCircle2} label="오늘 할 일과 마감일을 자동으로 정리" />
-          <BadgeLine icon={CheckCircle2} label="참여도와 피드백을 시각화한 성장 지도" />
-          <BadgeLine icon={CheckCircle2} label="문의·신고에 빠르게 대응하는 운영 팀" />
+          <BadgeLine icon={CheckCircle2} label="Automatic tracking for assignments and progress" />
+          <BadgeLine icon={CheckCircle2} label="Personalized paths for every learner" />
+          <BadgeLine icon={CheckCircle2} label="Faster responses for questions and alerts" />
         </div>
       </div>
       <div className="relative rounded-3xl border border-slate-800 bg-slate-900/60 p-8 shadow-[0_20px_80px_-40px_rgba(56,189,248,0.6)]">
@@ -326,35 +324,35 @@ function Hero({ isAuthenticated }: { isAuthenticated: boolean }) {
         <div className="relative space-y-6">
           <div className="rounded-2xl border border-slate-800 bg-slate-950/60 p-6">
             <p className="text-xs uppercase tracking-[0.25em] text-slate-400">
-              오늘의 추천
+              Today's highlight
             </p>
             <p className="mt-3 text-lg font-semibold text-slate-100">
-              “이번 주 과제 마감까지 3일 남았어요. 과제 작성 팁과 예시를 확인해 보세요.”
+              Three assignments are due this week. Check requirements and start now so you can submit early.
             </p>
             <p className="mt-2 text-sm text-slate-300">
-              추천 콘텐츠, 진행 중인 강의, 받은 피드백이 한 화면에서 연결됩니다.
+              Recommended content is already queued; new lessons and updates will appear here as soon as they arrive.
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <MiniCard
               icon={<Workflow className="h-5 w-5 text-sky-300" />}
-              title="오늘의 학습"
-              description="강의 보기 → 노트 정리 → 퀴즈 참여 순서대로 안내합니다."
+              title="Active learning"
+              description="Manage your course list and assignments without leaving this card view."
             />
             <MiniCard
               icon={<Users className="h-5 w-5 text-indigo-300" />}
-              title="실시간 도움"
-              description="질문, 토론, 신고 기능으로 바로 도움을 요청하세요."
+              title="Team collaboration"
+              description="Ask questions, reply, and share updates right where you learn."
             />
             <MiniCard
               icon={<Heart className="h-5 w-5 text-rose-300" />}
-              title="맞춤 피드백"
-              description="강사 피드백과 동료 피드백이 타임라인으로 모입니다."
+              title="Matched feedback"
+              description="Instructors and peers respond quickly so you can iterate with confidence."
             />
             <MiniCard
               icon={<Users className="h-5 w-5 text-emerald-300" />}
-              title="목표 달성률"
-              description="중단 위험 학습자에게는 리마인더와 대체 학습을 제안합니다."
+              title="Goal alignment"
+              description="Review milestones with your mentor and keep every step visible."
             />
           </div>
         </div>
@@ -366,7 +364,7 @@ function Hero({ isAuthenticated }: { isAuthenticated: boolean }) {
 function HighlightDeck() {
   return (
     <section className="mt-24 space-y-8">
-      <h2 className="text-3xl font-semibold text-slate-100">어떤 경험을 만나게 되나요?</h2>
+      <h2 className="text-3xl font-semibold text-slate-100">Everything you need in one place</h2>
       <div className="grid gap-6 md:grid-cols-3">
         {showcaseCards.map((card) => (
           <Link
@@ -395,16 +393,16 @@ function StepSection() {
     <section className="mt-24 rounded-3xl border border-slate-800 bg-slate-900/60 px-6 py-10 sm:px-10">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm uppercase tracking-[0.25em] text-slate-400">시작은 이렇게</p>
+          <p className="text-sm uppercase tracking-[0.25em] text-slate-400">How it works</p>
           <h2 className="mt-3 text-3xl font-semibold text-slate-100">
-            처음 방문한 학습자를 위한 3단계 가이드
+            Three steps to set up your learning space
           </h2>
         </div>
         <Link
           href="/onboarding"
           className="inline-flex items-center gap-2 rounded-full border border-slate-600 px-4 py-2 text-sm text-slate-200 transition hover:border-slate-400 hover:bg-slate-900/70"
         >
-          온보딩 체크리스트 보기
+          View onboarding checklist
           <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
@@ -427,7 +425,7 @@ function StepSection() {
 function LearnerBenefitSection() {
   return (
     <section className="mt-24 space-y-6">
-      <h2 className="text-3xl font-semibold text-slate-100">학습자가 좋아하는 이유</h2>
+      <h2 className="text-3xl font-semibold text-slate-100">Learners love these benefits</h2>
       <div className="grid gap-6 md:grid-cols-3">
         {learnerBenefits.map((benefit) => (
           <div
@@ -454,7 +452,7 @@ function StorySection() {
     <section className="mt-24 space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <h2 className="text-3xl font-semibold text-slate-100">
-          플랫폼을 사용해 본 사람들의 이야기
+          Teams using it to learn and ship together
         </h2>
       </div>
       <div className="grid gap-6 md:grid-cols-3">
@@ -464,7 +462,7 @@ function StorySection() {
             className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6"
           >
             <blockquote className="text-lg leading-relaxed text-slate-200">
-              “{story.quote}”
+              {story.quote}
             </blockquote>
             <figcaption className="mt-4 text-sm text-slate-400">
               <span className="font-medium text-slate-200">{story.name}</span>
@@ -483,9 +481,9 @@ function PreparationSection() {
     <section className="mt-24 space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm uppercase tracking-[0.25em] text-slate-400">지금 바로</p>
+          <p className="text-sm uppercase tracking-[0.25em] text-slate-400">Get started now</p>
           <h2 className="text-3xl font-semibold text-slate-100">
-            필요한 화면으로 바로 이동하세요
+            Pick where you want to go next
           </h2>
         </div>
       </div>
@@ -517,12 +515,12 @@ function CtaSection() {
     <section className="mt-24 rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 p-10 shadow-[0_0_120px_-40px_rgba(56,189,248,0.4)]">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm uppercase tracking-[0.25em] text-slate-400">READY TO LEARN</p>
+          <p className="text-sm uppercase tracking-[0.25em] text-slate-400">Ready to learn</p>
           <h2 className="mt-3 text-3xl font-semibold text-slate-100">
-            여러분의 학습 여정, 지금 여기에서 시작하세요
+            Your learning plan starts here
           </h2>
           <p className="mt-2 text-sm text-slate-400">
-            필요한 콘텐츠를 빠르게 찾고, 과제와 피드백을 놓치지 않고, 운영팀의 지원까지 받을 수 있는 공간입니다.
+            Find the content you need fast, keep assignments organized, and get support from setup to shipping. Join and see everything in one place.
           </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
@@ -530,14 +528,14 @@ function CtaSection() {
             href="/signup"
             className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-br from-indigo-500 via-sky-500 to-emerald-400 px-6 py-3 font-medium text-slate-950 shadow-lg shadow-emerald-400/40 transition hover:from-indigo-400 hover:via-sky-400 hover:to-emerald-300"
           >
-            지금 가입하고 둘러보기
+            Create an account
             <ArrowRight className="h-5 w-5" />
           </Link>
           <Link
             href="/support"
             className="inline-flex items-center gap-2 rounded-2xl border border-slate-600 px-6 py-3 text-slate-200 transition hover:border-slate-400 hover:bg-slate-900/70"
           >
-            운영팀에게 문의하기
+            Contact support
           </Link>
         </div>
       </div>

@@ -10,22 +10,22 @@ type RoleOption = {
 export const ROLE_OPTIONS: RoleOption[] = [
   {
     value: "learner",
-    title: "학습자",
-    description: "코스를 탐색하고 수강하며 과제를 제출합니다.",
+    title: "Learner",
+    description: "Browse courses, enroll, and submit assignments.",
     highlights: [
-      "마감 임박 과제를 빠르게 확인",
-      "제출 현황과 점수 추적",
-      "코스 콘텐츠와 피드백 열람",
+      "See upcoming deadlines quickly",
+      "Track submission status and scores",
+      "Access course content and feedback",
     ],
   },
   {
     value: "instructor",
-    title: "강사",
-    description: "코스를 개설하고 제출물을 관리합니다.",
+    title: "Instructor",
+    description: "Create courses and manage student submissions.",
     highlights: [
-      "코스/과제 생성 및 게시",
-      "제출물 채점과 피드백 제공",
-      "마감 및 재제출 정책 제어",
+      "Create and publish courses/assignments",
+      "Grade submissions and provide feedback",
+      "Control deadlines and resubmission policies",
     ],
   },
 ];

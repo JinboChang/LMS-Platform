@@ -52,9 +52,7 @@ export const ExampleStatus = () => {
       <header className="space-y-2 text-slate-100">
         <h1 className="text-3xl font-semibold tracking-tight">Backend Health Check</h1>
         <p className="text-sm text-slate-300">
-          예시 API(`/api/example/:id`)가 정상 동작하는지 확인합니다. Supabase 예시
-          레코드의 UUID를 입력하면 React Query를 통해 백엔드 응답을 확인할 수
-          있습니다.
+          Verify that the example API (`/api/example/:id`) and Supabase record lookup work through React Query by requesting a sample UUID.
         </p>
       </header>
 
@@ -78,13 +76,13 @@ export const ExampleStatus = () => {
           variant="secondary"
           className="mt-2 h-12 rounded-lg border border-slate-600 bg-slate-800 text-slate-100 hover:bg-slate-700 md:mt-6"
         >
-          조회하기
+          Check status
         </Button>
       </form>
 
       <article className="space-y-3 rounded-xl border border-slate-800 bg-slate-950/60 p-6 text-slate-100">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">현재 상태</h2>
+          <h2 className="text-lg font-semibold">Current status</h2>
           {exampleId
             ? query.status === 'pending'
               ? statusBadge('Fetching', 'idle')
@@ -96,21 +94,21 @@ export const ExampleStatus = () => {
 
         {!exampleId && (
           <p className="text-sm text-slate-300">
-            UUID를 입력하고 조회하기 버튼을 누르면 결과가 이곳에 표시됩니다.
+            Enter a UUID and click check to see the latest response.
           </p>
         )}
 
         {exampleId && query.status === 'pending' && (
-          <p className="text-sm text-slate-300">Supabase에서 데이터를 가져오는 중...</p>
+          <p className="text-sm text-slate-300">Requesting data from Supabase...</p>
         )}
 
         {query.status === 'error' && (
           <div className="space-y-2 rounded-lg border border-rose-400/30 bg-rose-500/5 p-4">
-            <p className="text-sm font-medium text-rose-300">요청 실패</p>
+            <p className="text-sm font-medium text-rose-300">Request failed</p>
             <p className="text-xs text-rose-200/80">
               {query.error instanceof Error
                 ? query.error.message
-                : '알 수 없는 에러가 발생했습니다.'}
+                : 'An unexpected error occurred.'}
             </p>
           </div>
         )}
@@ -123,19 +121,19 @@ export const ExampleStatus = () => {
             </div>
             <div>
               <p className="text-xs uppercase tracking-wide text-emerald-300">
-                이름
+                Name
               </p>
               <p>{query.data.fullName}</p>
             </div>
             <div>
               <p className="text-xs uppercase tracking-wide text-emerald-300">
-                소개
+                Bio
               </p>
-              <p>{query.data.bio ?? '—'}</p>
+              <p>{query.data.bio ?? 'No bio provided'}</p>
             </div>
             <div>
               <p className="text-xs uppercase tracking-wide text-emerald-300">
-                아바타
+                Avatar
               </p>
               <a
                 href={query.data.avatarUrl}
@@ -148,7 +146,7 @@ export const ExampleStatus = () => {
             </div>
             <div>
               <p className="text-xs uppercase tracking-wide text-emerald-300">
-                업데이트 시각
+                Updated at
               </p>
               <p>{query.data.updatedAt}</p>
             </div>

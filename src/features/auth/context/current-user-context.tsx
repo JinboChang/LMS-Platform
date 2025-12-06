@@ -81,7 +81,7 @@ export const useCurrentUserContext = () => {
   const value = useContext(CurrentUserContext);
 
   if (!value) {
-    throw new Error("CurrentUserProvider가 트리 상단에 필요합니다.");
+    throw new Error("CurrentUserProvider must wrap this component tree.");
   }
 
   return value;

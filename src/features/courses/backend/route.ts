@@ -131,7 +131,7 @@ export const registerCourseRoutes = (app: Hono<AppEnv>) => {
         failure(
           400,
           courseErrorCodes.invalidQuery,
-          '유효한 코스 ID가 필요합니다.',
+          'A valid course ID is required.',
           params.error.format(),
         ),
       );
@@ -165,7 +165,7 @@ export const registerCourseRoutes = (app: Hono<AppEnv>) => {
         failure(
           400,
           enrollmentErrorCodes.invalidPayload,
-          '신청 요청이 올바르지 않습니다.',
+          'Enrollment request is invalid.',
           parsedBody.error.format(),
         ),
       );
@@ -201,7 +201,7 @@ export const registerCourseRoutes = (app: Hono<AppEnv>) => {
         failure(
           400,
           enrollmentErrorCodes.invalidPayload,
-          '유효한 수강 ID가 필요합니다.',
+          'A valid enrollment ID is required.',
           params.error.format(),
         ),
       );
@@ -216,7 +216,7 @@ export const registerCourseRoutes = (app: Hono<AppEnv>) => {
         failure(
           400,
           enrollmentErrorCodes.invalidPayload,
-          '수강 취소 요청이 올바르지 않습니다.',
+          'Enrollment cancellation request is invalid.',
           parsedBody.error.format(),
         ),
       );

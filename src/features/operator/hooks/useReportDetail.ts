@@ -26,7 +26,7 @@ const fetchReportDetail = async (
   } catch (error) {
     const message = extractApiErrorMessage(
       error,
-      "신고 상세 정보를 불러오지 못했습니다.",
+      "Failed to load report detail.",
     );
     throw new Error(message);
   }
@@ -39,7 +39,7 @@ export const useOperatorReportDetail = (reportId: string | null) =>
       : ["operator", "reports", "detail", "empty"],
     queryFn: () => {
       if (!reportId) {
-        throw new Error("신고 ID가 필요합니다.");
+        throw new Error("Report ID is required.");
       }
 
       return fetchReportDetail(reportId);
@@ -47,4 +47,3 @@ export const useOperatorReportDetail = (reportId: string | null) =>
     enabled: Boolean(reportId),
     staleTime: 15_000,
   });
-

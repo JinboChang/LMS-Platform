@@ -62,7 +62,7 @@ export const RoleCard = memo(function RoleCard({
         </CardHeader>
         <CardContent className="space-y-2">
           <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
-            주요 기능
+            Key features
           </p>
           <ul className="space-y-1 text-sm text-slate-600">
             {option.highlights.map((highlight) => (

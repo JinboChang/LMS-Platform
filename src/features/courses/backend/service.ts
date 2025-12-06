@@ -51,8 +51,8 @@ type LearnerContext = {
 };
 
 const sortOptionLabels = {
-  latest: "최신순",
-  popular: "인기순",
+  latest: "Latest",
+  popular: "Most popular",
 } as const;
 
 const buildThumbnailUrl = (courseId: string) =>
@@ -97,7 +97,7 @@ const parseQuery = (
     return failure(
       400,
       courseErrorCodes.invalidQuery,
-      "검색 조건이 올바르지 않습니다.",
+      "Search parameters are invalid.",
       parsed.error.format(),
     );
   }
@@ -194,7 +194,7 @@ export const listCourses = async (
     return failure(
       500,
       courseErrorCodes.fetchFailed,
-      "코스를 불러오지 못했습니다.",
+      "Failed to fetch courses.",
       error.message,
     );
   }
@@ -307,7 +307,7 @@ export const listCourses = async (
     return failure(
       500,
       courseErrorCodes.fetchFailed,
-      "코스 목록 응답을 구성하지 못했습니다.",
+      "Failed to build course list response.",
       responseParse.error.format(),
     );
   }
@@ -326,20 +326,20 @@ export const getCourseDetail = async (
     return failure(
       500,
       courseErrorCodes.fetchFailed,
-      "코스를 조회하지 못했습니다.",
+      "Failed to fetch course.",
       error.message,
     );
   }
 
   if (!course) {
-    return failure(404, courseErrorCodes.notFound, "코스를 찾을 수 없습니다.");
+    return failure(404, courseErrorCodes.notFound, "Course not found.");
   }
 
   if (course.status !== "published") {
     return failure(
       403,
       courseErrorCodes.notPublished,
-      "공개 상태가 아닌 코스입니다.",
+      "Course is not published.",
     );
   }
 
@@ -347,7 +347,7 @@ export const getCourseDetail = async (
     return failure(
       500,
       courseErrorCodes.fetchFailed,
-      "코스 메타데이터가 손상되었습니다.",
+      "Course metadata is invalid.",
     );
   }
 
@@ -409,7 +409,7 @@ export const getCourseDetail = async (
     return failure(
       500,
       courseErrorCodes.fetchFailed,
-      "코스 상세 응답을 구성하지 못했습니다.",
+      "Failed to build course detail response.",
       detailParse.error.format(),
     );
   }
@@ -425,7 +425,7 @@ const ensureLearner = async (
     return failure(
       401,
       enrollmentErrorCodes.unauthorized,
-      "로그인이 필요합니다.",
+      "Sign-in is required.",
     );
   }
 
@@ -438,7 +438,7 @@ const ensureLearner = async (
     return failure(
       403,
       enrollmentErrorCodes.learnerProfileMissing,
-      "학습자 프로필을 찾을 수 없습니다.",
+      "Learner profile not found.",
     );
   }
 
@@ -454,7 +454,7 @@ const toEnrollmentResponse = (
     return failure(
       500,
       enrollmentErrorCodes.enrollmentUpdateFailed,
-      "수강 내역 응답을 구성하지 못했습니다.",
+      "Failed to build enrollment response.",
       parsed.error.format(),
     );
   }
@@ -481,7 +481,7 @@ export const enrollCourse = async (
     return failure(
       409,
       enrollmentErrorCodes.courseUnavailable,
-      "신청할 수 없는 코스입니다.",
+      "Course is not available for enrollment.",
     );
   }
 
@@ -496,7 +496,7 @@ export const enrollCourse = async (
       return failure(
         409,
         enrollmentErrorCodes.duplicateEnrollment,
-        "이미 수강 중인 코스입니다.",
+        "You are already enrolled in this course.",
       );
     }
 
@@ -510,7 +510,7 @@ export const enrollCourse = async (
       return failure(
         500,
         enrollmentErrorCodes.enrollmentUpdateFailed,
-        "수강 신청 상태를 갱신하지 못했습니다.",
+        "Failed to update enrollment status.",
         updated.error?.message,
       );
     }
@@ -536,8 +536,8 @@ export const enrollCourse = async (
       code === enrollmentErrorCodes.duplicateEnrollment ? 409 : 500,
       code,
       code === enrollmentErrorCodes.duplicateEnrollment
-        ? "이미 수강 중인 코스입니다."
-        : "수강 신청에 실패했습니다.",
+        ? "You are already enrolled in this course."
+        : "Failed to enroll in course.",
       inserted.error?.message,
     );
   }
@@ -562,7 +562,7 @@ export const cancelEnrollment = async (
     return failure(
       400,
       enrollmentErrorCodes.invalidPayload,
-      "지원하지 않는 수강 상태입니다.",
+      "Unsupported enrollment status.",
     );
   }
 
@@ -580,7 +580,7 @@ export const cancelEnrollment = async (
     return failure(
       404,
       enrollmentErrorCodes.enrollmentNotFound,
-      "수강 이력을 찾을 수 없습니다.",
+      "Enrollment record not found.",
       enrollmentResult.error?.message,
     );
   }
@@ -589,7 +589,7 @@ export const cancelEnrollment = async (
     return failure(
       403,
       enrollmentErrorCodes.unauthorized,
-      "본인 수강 이력만 취소할 수 있습니다.",
+      "You can only cancel your own enrollment.",
     );
   }
 
@@ -614,7 +614,7 @@ export const cancelEnrollment = async (
     return failure(
       500,
       enrollmentErrorCodes.enrollmentUpdateFailed,
-      "수강 취소에 실패했습니다.",
+      "Failed to cancel enrollment.",
       updated.error?.message,
     );
   }

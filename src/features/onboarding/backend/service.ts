@@ -60,7 +60,7 @@ export const processOnboarding = async (
     return failure(
       400,
       onboardingErrorCodes.invalidPayload,
-      "온보딩 요청 형식이 올바르지 않습니다.",
+      "Onboarding request payload is invalid.",
       parsedPayload.error.format()
     );
   }
@@ -119,7 +119,7 @@ export const processOnboarding = async (
 
     if (existingProfile.error) {
       throw new SupabaseAdminError(
-        "기존 프로필을 확인하는 중 오류가 발생했습니다.",
+        "Failed to check existing profile.",
         onboardingErrorCodes.profileValidationFailed,
         existingProfile.error
       );
@@ -129,7 +129,7 @@ export const processOnboarding = async (
       return failure(
         409,
         onboardingErrorCodes.profileAlreadyExists,
-        "이미 온보딩을 완료한 계정입니다."
+        "This account has already completed onboarding."
       );
     }
 
@@ -145,7 +145,7 @@ export const processOnboarding = async (
 
     if (!parsedProfile.success) {
       throw new SupabaseAdminError(
-        "저장된 온보딩 정보가 유효하지 않습니다.",
+        "Stored onboarding data is invalid.",
         onboardingErrorCodes.profileValidationFailed,
         parsedProfile.error.format()
       );
@@ -179,7 +179,7 @@ export const processOnboarding = async (
         return failure(
           500,
           onboardingErrorCodes.profileRollbackFailed,
-          "생성된 사용자를 정리하지 못했습니다.",
+          "Failed to clean up created user.",
           rollbackError instanceof Error ? rollbackError.message : rollbackError
         );
       }
@@ -208,7 +208,7 @@ export const processOnboarding = async (
     return failure(
       500,
       onboardingErrorCodes.unknown,
-      "온보딩 처리 중 예기치 못한 오류가 발생했습니다.",
+      "An unexpected error occurred while processing onboarding.",
       error instanceof Error ? error.message : error
     );
   }

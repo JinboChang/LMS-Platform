@@ -21,7 +21,7 @@ export const OperatorReportProcessFormSchema = z
       ctx.addIssue({
         path: ["actionDetails"],
         code: z.ZodIssueCode.custom,
-        message: "처리 메모를 입력해주세요.",
+        message: "Please enter a resolution note.",
       });
     }
   });
@@ -49,4 +49,3 @@ export const OperatorDifficultyFormSchema = OperatorDifficultyPayloadSchema;
 export type OperatorDifficultyFormValues = z.infer<
   typeof OperatorDifficultyFormSchema
 >;
-

@@ -65,7 +65,7 @@ export default function CoursesPage({ params }: CoursesPageProps) {
     (courseId: string) =>
       courseQuery.data?.items.find((course) => course.id === courseId)?.title ??
       courseDetailQuery.data?.title ??
-      '선택한 코스',
+      'Selected course',
     [courseDetailQuery.data?.title, courseQuery.data?.items],
   );
 
@@ -84,7 +84,7 @@ export default function CoursesPage({ params }: CoursesPageProps) {
         const response = await enrollMutation.mutateAsync({ courseId });
         showEnrollSuccess(findCourseTitle(response.courseId));
       } catch (error) {
-        showError(error instanceof Error ? error.message : '신청에 실패했습니다.');
+        showError(error instanceof Error ? error.message : 'Enrollment request failed.');
       }
     },
     [enrollMutation, findCourseTitle, guard, showEnrollSuccess, showError],
@@ -103,7 +103,7 @@ export default function CoursesPage({ params }: CoursesPageProps) {
         });
         showCancelSuccess(findCourseTitle(response.courseId));
       } catch (error) {
-        showError(error instanceof Error ? error.message : '취소에 실패했습니다.');
+        showError(error instanceof Error ? error.message : 'Cancellation request failed.');
       }
     },
     [cancelMutation, findCourseTitle, guard, showCancelSuccess, showError],
@@ -116,9 +116,9 @@ export default function CoursesPage({ params }: CoursesPageProps) {
           <span className="text-xs font-semibold uppercase text-slate-400">
             Courses
           </span>
-          <h1 className="text-3xl font-bold">코스 카탈로그</h1>
+          <h1 className="text-3xl font-bold">Course catalog</h1>
           <p className="text-sm text-slate-500">
-            검색어와 필터를 조합해 원하는 코스를 찾아보고, 바로 수강 신청하거나 취소할 수 있습니다.
+            Search or filter to find a course, enroll with one click, and cancel anytime.
           </p>
         </div>
       </header>
@@ -134,7 +134,7 @@ export default function CoursesPage({ params }: CoursesPageProps) {
         <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-600">
           {courseQuery.error instanceof Error
             ? courseQuery.error.message
-            : '코스 목록을 불러오는 중 오류가 발생했습니다.'}
+            : 'Failed to load courses.'}
         </div>
       ) : null}
 
@@ -163,17 +163,17 @@ export default function CoursesPage({ params }: CoursesPageProps) {
         <p className="text-xs text-rose-500">
           {courseDetailQuery.error instanceof Error
             ? courseDetailQuery.error.message
-            : '코스 상세 정보를 불러오는 중 오류가 발생했습니다.'}
+            : 'Failed to load course details.'}
         </p>
       ) : null}
 
       <footer className="mt-auto flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-500">
         <span>
-          총 {courseQuery.data?.items.length ?? 0}개의 코스가 검색되었습니다.
+          Total {courseQuery.data?.items.length ?? 0} courses found.
         </span>
         <div className="flex items-center gap-1">
           <Plus className="h-3.5 w-3.5" />
-          <span>필터를 조정해 더 많은 코스를 탐색하세요.</span>
+          <span>Adjust filters to discover more courses.</span>
         </div>
       </footer>
       <Toaster />

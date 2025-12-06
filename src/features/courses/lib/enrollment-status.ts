@@ -8,7 +8,7 @@ export const getEnrollmentStatusLabel = (
   status: ExtendedEnrollmentStatusDto,
 ): string =>
   match(status)
-    .with('active', () => '수강 중')
-    .with('cancelled', () => '취소됨')
-    .with('none', () => '미신청')
+    .with('active', () => 'Enrolled')
+    .with('cancelled', () => 'Cancelled')
+    .with('none', () => 'Not enrolled')
     .exhaustive();

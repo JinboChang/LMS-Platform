@@ -66,7 +66,7 @@ export const CourseProgressGrid = ({
           key={course.id}
           href={`/courses/${course.id}`}
           className="group block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          aria-label={`${course.title} 상세 보기`}
+          aria-label={`${course.title} details`}
         >
           <Card className="flex h-full flex-col border-muted transition group-hover:border-primary/50 group-hover:shadow-md">
             <div className="relative h-32 w-full overflow-hidden rounded-t-lg">
@@ -104,7 +104,7 @@ export const CourseProgressGrid = ({
                 <p className="text-sm text-muted-foreground">No scheduled deadlines.</p>
               )}
               <span className="inline-flex items-center gap-1 text-xs font-medium text-primary">
-                코스 상세 보기
+                View course details
                 <span aria-hidden>→</span>
               </span>
             </CardContent>

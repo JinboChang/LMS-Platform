@@ -28,7 +28,7 @@ export const registerAssignmentSubmissionRoutes = (app: Hono<AppEnv>) => {
         failure(
           400,
           assignmentSubmissionErrorCodes.invalidParams,
-          "과제 식별자가 올바르지 않습니다.",
+          "Assignment id is invalid.",
           parsedParams.error.format(),
         ),
       );
@@ -44,7 +44,7 @@ export const registerAssignmentSubmissionRoutes = (app: Hono<AppEnv>) => {
         failure(
           400,
           assignmentSubmissionErrorCodes.invalidPayload,
-          "요청 본문을 해석할 수 없습니다.",
+          "Unable to parse request body.",
           error instanceof Error ? error.message : error,
         ),
       );

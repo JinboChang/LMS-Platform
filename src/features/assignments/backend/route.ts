@@ -174,7 +174,7 @@ export const registerAssignmentRoutes = (app: Hono<AppEnv>) => {
         failure(
           400,
           assignmentErrorCodes.validationError,
-          "요청 파라미터가 올바르지 않습니다.",
+          "Request parameters are invalid.",
           parsedParams.error.format(),
         ),
       );
@@ -189,7 +189,7 @@ export const registerAssignmentRoutes = (app: Hono<AppEnv>) => {
       const errorResult = result as ErrorResult<AssignmentServiceError, unknown>;
 
       if (errorResult.status >= 500) {
-        logger.error("과제 상세 조회 중 오류 발생", errorResult.error);
+        logger.error("Error while fetching assignment detail", errorResult.error);
       }
 
       return respond(c, result);

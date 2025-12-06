@@ -80,14 +80,14 @@ export const createSupabaseAdmin = (
 
       if (isConflict) {
         throw new SupabaseAdminError(
-          "이미 가입된 이메일입니다.",
+          "This email is already registered.",
           onboardingErrorCodes.emailAlreadyExists,
           createError
         );
       }
 
       throw new SupabaseAdminError(
-        "Supabase 사용자 생성에 실패했습니다.",
+        "Failed to create Supabase user.",
         onboardingErrorCodes.authCreateFailed,
         createError
       );
@@ -95,7 +95,7 @@ export const createSupabaseAdmin = (
 
     if (!created?.user) {
       throw new SupabaseAdminError(
-        "Supabase 사용자 정보를 가져오지 못했습니다.",
+        "Failed to fetch created Supabase user.",
         onboardingErrorCodes.authCreateFailed
       );
     }
@@ -109,7 +109,7 @@ export const createSupabaseAdmin = (
 
     if (sessionError || !sessionData?.session) {
       throw new SupabaseAdminError(
-        "세션 토큰을 발급하지 못했습니다.",
+        "Failed to issue session tokens.",
         onboardingErrorCodes.sessionCreateFailed,
         sessionError
       );
@@ -126,7 +126,7 @@ export const createSupabaseAdmin = (
 
     if (error) {
       throw new SupabaseAdminError(
-        "생성된 사용자를 정리하지 못했습니다.",
+        "Failed to clean up created user.",
         onboardingErrorCodes.profileRollbackFailed,
         error
       );
@@ -152,7 +152,7 @@ export const createSupabaseAdmin = (
 
     if (error) {
       throw new SupabaseAdminError(
-        "온보딩 프로필을 저장하지 못했습니다.",
+        "Failed to save onboarding profile.",
         onboardingErrorCodes.profileInsertFailed,
         error
       );
@@ -170,7 +170,7 @@ export const createSupabaseAdmin = (
 
     if (error) {
       throw new SupabaseAdminError(
-        "사용자 메타데이터를 업데이트하지 못했습니다.",
+        "Failed to update user metadata.",
         onboardingErrorCodes.profileValidationFailed,
         error
       );
@@ -195,8 +195,8 @@ export const findAuthUserByEmail = async (
   const perPage = 200;
   let page = 1;
 
-  // Supabase Admin API는 이메일 조회 전용 메서드를 제공하지 않으므로
-  // 페이지네이션을 돌며 일치하는 이메일을 탐색한다.
+  // Supabase Admin API does not provide email-only lookup,
+  // so iterate through pages to find a matching email.
   while (true) {
     const result = await client.auth.admin.listUsers({ page, perPage });
 

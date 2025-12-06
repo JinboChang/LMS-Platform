@@ -45,7 +45,7 @@ export const CourseCard = ({
       <div className="relative h-40 w-full overflow-hidden">
         <Image
           src={course.thumbnailUrl}
-          alt={`${course.title} 대표 이미지`}
+          alt={`${course.title} course image`}
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 25vw"
@@ -68,7 +68,7 @@ export const CourseCard = ({
         <div className="flex items-center justify-between text-xs text-slate-500">
           <span className="flex items-center gap-1">
             <Users className="h-3.5 w-3.5" />
-            {course.activeEnrollmentCount.toLocaleString()}명 수강 중
+            {course.activeEnrollmentCount.toLocaleString()} enrolled
           </span>
           <span className="flex items-center gap-1">
             <BookOpen className="h-3.5 w-3.5" />
@@ -80,7 +80,7 @@ export const CourseCard = ({
           onClick={() => onSelect(course.id)}
           className="text-left text-xs text-slate-500 underline-offset-2 hover:underline"
         >
-          커리큘럼과 상세정보 보기
+          View curriculum and details
         </button>
       </CardContent>
       <CardFooter className="mt-auto flex flex-col gap-2 px-5 pb-5">
@@ -96,11 +96,11 @@ export const CourseCard = ({
         >
           {isEnrolled
             ? cancelPending
-              ? '수강 취소 중...'
-              : '수강 취소'
+              ? 'Cancelling...'
+              : 'Cancel enrollment'
             : enrollPending
-              ? '수강 신청 중...'
-              : '수강 신청'}
+              ? 'Enrolling...'
+              : 'Enroll now'}
         </Button>
       </CardFooter>
     </Card>

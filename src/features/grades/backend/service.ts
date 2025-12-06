@@ -273,7 +273,7 @@ export const getGradesOverview = async (
     return failure(
       401,
       gradesErrorCodes.unauthorized,
-      "성적 정보를 조회하려면 로그인 후 다시 시도해주세요.",
+      "Please sign in to view grades.",
     );
   }
 
@@ -285,7 +285,7 @@ export const getGradesOverview = async (
     return failure(
       400,
       gradesErrorCodes.invalidQuery,
-      "성적 정보를 조회할 수 없는 요청입니다.",
+      "Grade request is invalid.",
       parsedQuery.error.format(),
     );
   }
@@ -301,7 +301,7 @@ export const getGradesOverview = async (
     return failure(
       500,
       gradesErrorCodes.enrollmentFetchFailed,
-      "수강 중인 강좌 정보를 불러오지 못했습니다.",
+      "Failed to load enrolled courses.",
       error instanceof Error ? error.message : error,
     );
   }
@@ -316,7 +316,7 @@ export const getGradesOverview = async (
     return failure(
       500,
       gradesErrorCodes.assignmentFetchFailed,
-      "과제 정보를 불러오지 못했습니다.",
+      "Failed to load assignments.",
       error instanceof Error ? error.message : error,
     );
   }
@@ -334,7 +334,7 @@ export const getGradesOverview = async (
     return failure(
       500,
       gradesErrorCodes.submissionFetchFailed,
-      "제출 및 피드백 정보를 불러오지 못했습니다.",
+      "Failed to load submissions or feedback.",
       error instanceof Error ? error.message : error,
     );
   }
@@ -387,7 +387,7 @@ export const getGradesOverview = async (
     return failure(
       500,
       gradesErrorCodes.responseValidationFailed,
-      "성적 요약 데이터를 검증하지 못했습니다.",
+      "Failed to validate grade overview data.",
       parsedResponse.error.format(),
     );
   }
@@ -412,7 +412,7 @@ export const getCourseGrades = async (
     return failure(
       401,
       gradesErrorCodes.unauthorized,
-      "성적 정보를 조회하려면 로그인 후 다시 시도해주세요.",
+      "Please sign in to view grades.",
     );
   }
 
@@ -422,7 +422,7 @@ export const getCourseGrades = async (
     return failure(
       400,
       gradesErrorCodes.invalidQuery,
-      "강의별 성적 조회 요청이 올바르지 않습니다.",
+      "Course grade request is invalid.",
       parsedParams.error.format(),
     );
   }
@@ -435,7 +435,7 @@ export const getCourseGrades = async (
     return failure(
       400,
       gradesErrorCodes.invalidQuery,
-      "수강 중인 학습자 정보를 확인할 수 없습니다.",
+      "Unable to verify enrolled learner information.",
       parsedQuery.error.format(),
     );
   }
@@ -451,7 +451,7 @@ export const getCourseGrades = async (
     return failure(
       500,
       gradesErrorCodes.enrollmentFetchFailed,
-      "수강 중인 강좌 정보를 불러오지 못했습니다.",
+      "Failed to load enrolled courses.",
       error instanceof Error ? error.message : error,
     );
   }
@@ -464,7 +464,7 @@ export const getCourseGrades = async (
     return failure(
       404,
       gradesErrorCodes.courseNotFound,
-      "수강 중인 강좌에서 성적 정보를 찾을 수 없습니다.",
+      "Grade information not found for this course.",
     );
   }
 
@@ -478,7 +478,7 @@ export const getCourseGrades = async (
     return failure(
       500,
       gradesErrorCodes.assignmentFetchFailed,
-      "과제 정보를 불러오지 못했습니다.",
+      "Failed to load assignments.",
       error instanceof Error ? error.message : error,
     );
   }
@@ -496,7 +496,7 @@ export const getCourseGrades = async (
     return failure(
       500,
       gradesErrorCodes.submissionFetchFailed,
-      "제출 및 피드백 정보를 불러오지 못했습니다.",
+      "Failed to load submissions or feedback.",
       error instanceof Error ? error.message : error,
     );
   }
@@ -549,7 +549,7 @@ export const getCourseGrades = async (
     return failure(
       500,
       gradesErrorCodes.responseValidationFailed,
-      "강좌 성적 데이터를 검증하지 못했습니다.",
+      "Failed to validate course grade data.",
       parsedResponse.error.format(),
     );
   }

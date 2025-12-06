@@ -53,7 +53,7 @@ const fetchReports = async (
   } catch (error) {
     const message = extractApiErrorMessage(
       error,
-      "신고 목록을 불러오지 못했습니다.",
+      "Failed to load the report list.",
     );
     throw new Error(message);
   }

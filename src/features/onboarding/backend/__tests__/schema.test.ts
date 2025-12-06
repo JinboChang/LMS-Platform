@@ -8,7 +8,7 @@ describe("OnboardingRequestSchema", () => {
   it("validates a correct payload", () => {
     const result = OnboardingRequestSchema.safeParse({
       email: "learner@example.com",
-      name: "홍길동",
+      name: "John Doe",
       phoneNumber: "+821012345678",
       role: "learner",
       acceptedTerms: true,
@@ -20,7 +20,7 @@ describe("OnboardingRequestSchema", () => {
   it("rejects an invalid phone number", () => {
     const result = OnboardingRequestSchema.safeParse({
       email: "learner@example.com",
-      name: "홍길동",
+      name: "John Doe",
       phoneNumber: "010-1234-5678",
       role: "learner",
       acceptedTerms: true,
@@ -32,7 +32,7 @@ describe("OnboardingRequestSchema", () => {
   it("rejects when terms are not accepted", () => {
     const result = OnboardingRequestSchema.safeParse({
       email: "learner@example.com",
-      name: "홍길동",
+      name: "John Doe",
       phoneNumber: "+821012345678",
       role: "learner",
       acceptedTerms: false,

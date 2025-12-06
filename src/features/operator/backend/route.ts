@@ -107,9 +107,7 @@ type OperatorRequestContext = {
 
 const resolveOperatorRequest = async (
   c: AppContext,
-): Promise<
-  HandlerResult<OperatorRequestContext, OperatorServiceError, unknown>
-> => {
+): Promise<HandlerResult<OperatorRequestContext, OperatorServiceError, unknown>> => {
   const supabase = getSupabase(c);
   const logger = getLogger(c);
   const token = getAccessToken(c);
@@ -118,7 +116,7 @@ const resolveOperatorRequest = async (
     return failure(
       401,
       operatorErrorCodes.unauthorized,
-      "운영 기능은 로그인 후 이용할 수 있습니다.",
+      "Operator endpoints require sign-in.",
     );
   }
 
@@ -130,7 +128,7 @@ const resolveOperatorRequest = async (
     return failure(
       401,
       operatorErrorCodes.unauthorized,
-      "인증 정보가 유효하지 않습니다.",
+      "Authentication is invalid or expired.",
       authResult.error?.message,
     );
   }
@@ -171,7 +169,7 @@ const parseUuid = (value: string | undefined, field: string) => {
     return failure(
       400,
       operatorErrorCodes.validationError,
-      `${field} 값이 올바르지 않습니다.`,
+      `${field} must be a valid UUID.`,
       parsed.error.format(),
     );
   }
@@ -200,7 +198,7 @@ export async function registerOperatorRoutes(app: Hono<AppEnv>) {
   });
 
   app.get("/operator/reports/:reportId", async (c) => {
-    const reportIdResult = parseUuid(c.req.param("reportId"), "신고 ID");
+    const reportIdResult = parseUuid(c.req.param("reportId"), "reportId");
 
     if (!reportIdResult.ok) {
       return respond(c, reportIdResult);
@@ -225,7 +223,7 @@ export async function registerOperatorRoutes(app: Hono<AppEnv>) {
   });
 
   app.patch("/operator/reports/:reportId", async (c) => {
-    const reportIdResult = parseUuid(c.req.param("reportId"), "신고 ID");
+    const reportIdResult = parseUuid(c.req.param("reportId"), "reportId");
 
     if (!reportIdResult.ok) {
       return respond(c, reportIdResult);
@@ -253,7 +251,7 @@ export async function registerOperatorRoutes(app: Hono<AppEnv>) {
   });
 
   app.post("/operator/reports/:reportId/actions", async (c) => {
-    const reportIdResult = parseUuid(c.req.param("reportId"), "신고 ID");
+    const reportIdResult = parseUuid(c.req.param("reportId"), "reportId");
 
     if (!reportIdResult.ok) {
       return respond(c, reportIdResult);
@@ -320,7 +318,7 @@ export async function registerOperatorRoutes(app: Hono<AppEnv>) {
   app.patch("/operator/categories/:categoryId", async (c) => {
     const categoryIdResult = parseUuid(
       c.req.param("categoryId"),
-      "카테고리 ID",
+      "categoryId",
     );
 
     if (!categoryIdResult.ok) {
@@ -388,7 +386,7 @@ export async function registerOperatorRoutes(app: Hono<AppEnv>) {
   app.patch("/operator/difficulty-levels/:difficultyId", async (c) => {
     const difficultyIdResult = parseUuid(
       c.req.param("difficultyId"),
-      "난이도 ID",
+      "difficultyId",
     );
 
     if (!difficultyIdResult.ok) {

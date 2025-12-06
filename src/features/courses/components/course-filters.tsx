@@ -63,11 +63,11 @@ export const CourseFilters = ({
       className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:flex-row md:items-end"
     >
       <label className="flex flex-1 flex-col gap-2 text-xs font-medium text-slate-600">
-        검색어
+        Search
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <Input
-            placeholder="코스명 또는 설명으로 검색"
+            placeholder="Search by course title or description"
             {...form.register('search')}
             className="pl-9"
           />
@@ -75,7 +75,7 @@ export const CourseFilters = ({
       </label>
 
       <label className="flex w-full flex-col gap-2 text-xs font-medium text-slate-600 md:w-40">
-        카테고리
+        Category
         <Select
           value={form.watch('categoryId') ?? 'all'}
           onValueChange={(value) =>
@@ -83,10 +83,10 @@ export const CourseFilters = ({
           }
         >
           <SelectTrigger>
-            <SelectValue placeholder="전체" />
+            <SelectValue placeholder="All" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">전체</SelectItem>
+            <SelectItem value="all">All</SelectItem>
             {filters?.categories.map((category) => (
               <SelectItem key={category.id} value={category.id}>
                 {category.name}
@@ -97,7 +97,7 @@ export const CourseFilters = ({
       </label>
 
       <label className="flex w-full flex-col gap-2 text-xs font-medium text-slate-600 md:w-40">
-        난이도
+        Difficulty
         <Select
           value={form.watch('difficultyId') ?? 'all'}
           onValueChange={(value) =>
@@ -105,10 +105,10 @@ export const CourseFilters = ({
           }
         >
           <SelectTrigger>
-            <SelectValue placeholder="전체" />
+            <SelectValue placeholder="All" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">전체</SelectItem>
+            <SelectItem value="all">All</SelectItem>
             {filters?.difficultyLevels.map((difficulty) => (
               <SelectItem key={difficulty.id} value={difficulty.id}>
                 {difficulty.label}
@@ -119,7 +119,7 @@ export const CourseFilters = ({
       </label>
 
       <label className="flex w-full flex-col gap-2 text-xs font-medium text-slate-600 md:w-40">
-        정렬
+        Sort
         <Select
           value={form.watch('sort') ?? 'latest'}
           onValueChange={(value) =>
@@ -130,7 +130,7 @@ export const CourseFilters = ({
           }
         >
           <SelectTrigger>
-            <SelectValue placeholder="정렬 방식을 선택하세요" />
+            <SelectValue placeholder="Choose sort order" />
           </SelectTrigger>
           <SelectContent>
             {(filters?.sortOptions ?? []).map((option) => (
@@ -145,7 +145,7 @@ export const CourseFilters = ({
       <div className="flex items-center gap-2">
         <Button type="submit" disabled={isSubmitting} className="gap-1">
           <SlidersHorizontal className="h-4 w-4" />
-          적용
+          Apply
         </Button>
         <Button
           type="button"
@@ -153,7 +153,7 @@ export const CourseFilters = ({
           onClick={handleReset}
           disabled={isSubmitting}
         >
-          초기화
+          Reset
         </Button>
       </div>
     </form>

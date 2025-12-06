@@ -27,7 +27,7 @@ export const CourseGradeTable = ({ assignments }: CourseGradeTableProps) => {
   if (rows.length === 0) {
     return (
       <p className="rounded-md border border-dashed border-muted-foreground/50 px-4 py-6 text-center text-sm text-muted-foreground">
-        아직 채점 가능한 과제가 없습니다. 과제가 공개되면 이곳에서 점수와 피드백을 확인할 수 있습니다.
+        No gradable assignments yet. Scores and feedback will appear here once assignments open.
       </p>
     );
   }
@@ -35,29 +35,29 @@ export const CourseGradeTable = ({ assignments }: CourseGradeTableProps) => {
   return (
     <div className="overflow-x-auto rounded-lg border">
       <table className="min-w-full divide-y divide-border">
-        <caption className="sr-only">과제별 성적 및 피드백 목록</caption>
+        <caption className="sr-only">Assignment grades and feedback</caption>
         <thead className="bg-muted/50">
           <tr>
             <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-muted-foreground">
-              과제명
+              Assignment
             </th>
             <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-muted-foreground">
-              상태
+              Status
             </th>
             <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-muted-foreground">
-              점수
+              Score
             </th>
             <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-muted-foreground">
-              반영 비율
+              Weight
             </th>
             <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-muted-foreground">
-              제출일
+              Submitted at
             </th>
             <th scope="col" className="px-4 py-3 text-left text-sm font-semibold text-muted-foreground">
-              지연 여부
+              Late
             </th>
             <th scope="col" className="px-4 py-3 text-right text-sm font-semibold text-muted-foreground">
-              피드백
+              Feedback
             </th>
           </tr>
         </thead>
@@ -68,7 +68,7 @@ export const CourseGradeTable = ({ assignments }: CourseGradeTableProps) => {
                 <div className="flex flex-col">
                   <span>{assignment.title}</span>
                   <span className="text-xs text-muted-foreground">
-                    마감 {formatDateTime(assignment.dueAt)}
+                    Due {formatDateTime(assignment.dueAt)}
                   </span>
                 </div>
               </td>
@@ -103,11 +103,11 @@ export const CourseGradeTable = ({ assignments }: CourseGradeTableProps) => {
                 {assignment.feedbackText || assignment.score !== null ? (
                   <FeedbackDetailDialog assignment={assignment}>
                     <Button variant="outline" size="sm">
-                      상세 보기
+                      View details
                     </Button>
                   </FeedbackDetailDialog>
                 ) : (
-                  <span className="text-sm text-muted-foreground">피드백 대기</span>
+                  <span className="text-sm text-muted-foreground">Feedback pending</span>
                 )}
               </td>
             </tr>

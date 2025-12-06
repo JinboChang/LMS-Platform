@@ -31,33 +31,33 @@ const mapOnboardingError = (error: unknown) => {
     const status = error.response?.status;
 
     if (serviceCode === onboardingErrorCodes.authUserNotFound) {
-      return "이메일 인증이 완료되지 않았거나 존재하지 않는 계정입니다.";
+      return "The account is unverified or does not exist. Please verify your email.";
     }
 
     if (serviceCode === onboardingErrorCodes.authUserLookupFailed) {
-      return "인증 서비스와 통신하는 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+      return "We could not reach the authentication service. Please try again soon.";
     }
 
     if (serviceCode === onboardingErrorCodes.profileInsertFailed) {
-      return "프로필 정보를 저장하지 못했습니다. 잠시 후 다시 시도해 주세요.";
+      return "Failed to save your profile. Please try again.";
     }
 
     if (serviceCode === onboardingErrorCodes.profileValidationFailed) {
-      return "저장된 프로필 데이터가 유효하지 않습니다.";
+      return "Stored profile data is invalid.";
     }
 
     if (serviceCode === onboardingErrorCodes.profileAlreadyExists || status === 409) {
-      return "이미 온보딩을 완료한 계정입니다. 로그인 후 이용해 주세요.";
+      return "This account already completed onboarding. Please log in.";
     }
 
     if (serviceCode === onboardingErrorCodes.invalidPayload || status === 400) {
-      return "입력값을 다시 확인해 주세요.";
+      return "Please double-check your inputs.";
     }
   }
 
   return extractApiErrorMessage(
     error,
-    "온보딩 요청 처리에 실패했습니다. 잠시 후 다시 시도해 주세요."
+    "We could not process the onboarding request. Please try again."
   );
 };
 

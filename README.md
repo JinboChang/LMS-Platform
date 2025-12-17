@@ -1,92 +1,70 @@
-이 프로젝트는 [`EasyNext`](https://github.com/easynext/easynext)를 사용해 생성된 [Next.js](https://nextjs.org) 프로젝트입니다.
+# LMS
 
-## Getting Started
+Role-based learning management system for learners, instructors, and operators.  
+Built with Next.js App Router, Hono, and Supabase. UI and API are separated.
 
-개발 서버를 실행합니다.<br/>
-환경에 따른 명령어를 사용해주세요.
+## What it does
+- Learners: course catalog search/filter, enroll/cancel, assignment detail/submit/resubmit, dashboard, grade board
+- Instructors: course status overview, course create/edit/status, assignment create/edit/status, grade submissions
+- Operators: report queue, status updates, action logs, category/difficulty metadata management
+- Onboarding: choose role and redirect to the right workspace
+- Auth: Supabase Auth, protected routes redirect via middleware
 
+## Key routes
+- `/`, `/login`, `/signup`, `/onboarding`
+- `/courses`, `/courses/[courseId]`
+- `/courses/[courseId]/assignments/[assignmentId]` (submit assignments)
+- `/dashboard`, `/grades`
+- `/instructor/dashboard`
+- `/instructor/courses`, `/instructor/courses/new`, `/instructor/courses/[courseId]/edit`
+- `/instructor/courses/[courseId]/assignments`
+- `/instructor/courses/[courseId]/assignments/[assignmentId]/submissions/[submissionId]` (grading)
+- `/operator`
+
+## Architecture
+- Next.js 15 App Router (all UI is client components)
+- Hono API: `src/app/api/[[...hono]]/route.ts` -> `src/backend/hono/app.ts`
+- Middleware: error boundary, app context, Supabase service-role client per request
+- React Query: QueryClientProvider in `src/app/providers.tsx`
+- API client: `src/lib/remote/api-client.ts` (axios)
+- Validation: Zod
+- State: Zustand
+- UI: shadcn-ui + Tailwind CSS
+
+## Structure (core)
+- `src/app`: routes and pages
+- `src/backend`: Hono app, middleware, shared HTTP response helpers
+- `src/features/<feature>`: components/hooks/backend/service/schema/lib
+- `src/lib`: utilities, Supabase client, API client
+- `supabase/migrations`: schema and seed SQL
+
+## Data and DB
+- Supabase PostgreSQL
+- Main tables: `users`, `course_categories`, `difficulty_levels`, `courses`, `enrollments`, `assignments`, `assignment_submissions`, `reports`, `report_actions`
+- Sample seed data: `supabase/migrations/0004_*`, `supabase/migrations/0005_*`
+- Migrations live in `supabase/migrations` (do not run locally)
+
+## Environment variables
 ```bash
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_URL=...
+SUPABASE_SERVICE_ROLE_KEY=...
+NEXT_PUBLIC_API_BASE_URL= # optional, empty uses same origin
+```
+
+## Run locally
+```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-브라우저에서 [http://localhost:3000](http://localhost:3000)을 열어 결과를 확인할 수 있습니다.
-
-`app/page.tsx` 파일을 수정하여 페이지를 편집할 수 있습니다. 파일을 수정하면 자동으로 페이지가 업데이트됩니다.
-
-## 기본 포함 라이브러리
-
-- [Next.js](https://nextjs.org)
-- [React](https://react.dev)
-- [Tailwind CSS](https://tailwindcss.com)
-- [TypeScript](https://www.typescriptlang.org)
-- [ESLint](https://eslint.org)
-- [Prettier](https://prettier.io)
-- [Shadcn UI](https://ui.shadcn.com)
-- [Lucide Icon](https://lucide.dev)
-- [date-fns](https://date-fns.org)
-- [react-use](https://github.com/streamich/react-use)
-- [es-toolkit](https://github.com/toss/es-toolkit)
-- [Zod](https://zod.dev)
-- [React Query](https://tanstack.com/query/latest)
-- [React Hook Form](https://react-hook-form.com)
-- [TS Pattern](https://github.com/gvergnaud/ts-pattern)
-
-## 사용 가능한 명령어
-
-한글버전 사용
-
-```sh
-easynext lang ko
+## Test and lint
+```bash
+npm run test
+npm run lint
 ```
 
-최신버전으로 업데이트
-
-```sh
-npm i -g @easynext/cli@latest
-# or
-yarn add -g @easynext/cli@latest
-# or
-pnpm add -g @easynext/cli@latest
-```
-
-Supabase 설정
-
-```sh
-easynext supabase
-```
-
-Next-Auth 설정
-
-```sh
-easynext auth
-
-# ID,PW 로그인
-easynext auth idpw
-# 카카오 로그인
-easynext auth kakao
-```
-
-유용한 서비스 연동
-
-```sh
-# Google Analytics
-easynext gtag
-
-# Microsoft Clarity
-easynext clarity
-
-# ChannelIO
-easynext channelio
-
-# Sentry
-easynext sentry
-
-# Google Adsense
-easynext adsense
-```
+## Notes
+- `src/app/example` is a UI/data example page
+- `docs/` contains PRD, user flows, and DB notes

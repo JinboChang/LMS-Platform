@@ -3,6 +3,8 @@
 Role-based learning management system for learners, instructors, and operators.  
 Built with Next.js App Router, Hono, and Supabase. UI and API are separated.
 
+Temporary prototype link (It may fail to fetch database due to inactivity of Supabase): https://lms-platform-one-xi.vercel.app/
+
 ## What it does
 - Learners: course catalog search/filter, enroll/cancel, assignment detail/submit/resubmit, dashboard, grade board
 - Instructors: course status overview, course create/edit/status, assignment create/edit/status, grade submissions
